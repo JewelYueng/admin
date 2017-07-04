@@ -2,10 +2,13 @@
   <div class="algorithm">
     <div class="head">
       <el-button type="primary" icon="plus" @click="upload">添加</el-button>
+      <el-button @click="shareSome" icon="share">启用</el-button>
+      <el-button @click="deleteSome" icon="delete">删除</el-button>
     </div>
     <div class='title'>所有算法已加载，共{{count}}个</div>
     <div id="algorithm-list">
       <div class="list-head" style="border-bottom: 0.8px solid #324157">
+        <div><input type="checkbox" v-model="checkAll" id="算法名" value="算法名"></div>
         <div class="methods-name">算法名</div>
         <div class="description">说明</div>
         <div class="state">状态</div>
@@ -13,6 +16,8 @@
       </div>
       <div class="list-body">
         <div class="list-item" v-for="(item,index) in items" >
+          <div><input type="checkbox" v-model="checked" :value="item.id" @click="currClick(item,index)">
+          </div>
           <div class="methods-name">{{item.name}}</div>
           <div class="description"><el-tooltip placement="top">
             <div slot="content">{{item.description}}</div>
@@ -100,7 +105,9 @@
     data(){
       return {
         //methodState: "state",
-        items: []
+        items: [],
+       checked: [],
+         totalAmount: []
       }
     },
     created(){
@@ -110,9 +117,78 @@
       count: function (item, index) {
         let sum = this.items.length;
         return sum;
+      },
+
+      checkAll: {
+        get: function () {
+          return this.checkedCount === this.items.length;
+        },
+        set: function (value) {
+          let _this = this;
+          if (value) {
+            this.totalAmount = [];
+            this.checked = this.items.map(function (item) {
+              item.checked = true;
+              let total = item.id;
+              _this.totalAmount.push(total);
+              return item.id;
+            })
+          } else {
+            this.checked = [];
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              item.checked = false;
+            });
+          }
+        }
+      },
+
+      checkedCount: {
+        get: function () {
+          return this.checked.length;
+        }
       }
       },
     methods:{
+
+      deleteSome: function () {
+        this.$api({
+          method: 'deleteMerge',
+          opts: {body: {idList: this.checked}}
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 1) {
+            this.$hint('删除成功', 'success')
+            this.getTotalItems()
+            this.checked = [];
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              item.checked = false;
+            });
+          } else {
+            this.$hint('不明原因失败，建议刷新', 'error')
+          }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
+        })
+
+      },
+
+      shareSome(){
+        this.$api({method: 'activeMerge', body: {idList: this.checked}}).then(res => {
+          if (res.data.code === 1) {
+            this.$hint('启用成功', 'success')
+            this.getTotalItems()
+          } else {
+            this.$hint('不明原因失败，建议刷新', 'warn')
+          }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
+        })
+
+      },
       changeState(index){
         if (parseInt(this.items[index].state)=== 0) {
           this.$api({method: 'activeMerge', body: {idList: [this.items[index].id]}}).then(res => {
