@@ -1,74 +1,73 @@
 <template>
   <div class="normal-log">
-    <div class="head">
-      <el-button type="primary" @click="upload" icon="upload"> 上传</el-button>
-      <el-button @click="shareSome" icon="share"> 分享</el-button>
-      <el-button @click="deleteSome" icon="delete"> 删除</el-button>
-      <input type="text" id="searchBox" placeholder="请输入关键字" v-model="keyWord">
-      <div v-show="isSearching" class="close-btn" @click="close_search">
-        <i class="el-icon-circle-cross"></i>
+    <div class="share-head">
+      <div class="bash-btns">
+        <el-button @click="deleteSome" icon="delete">删除</el-button>
       </div>
-      <div v-show="!isSearching" id="search_button" @click="searchLog"><i class="el-icon-search"></i></div>
-    </div>
-    <div class='title'>所有文件已加载，共{{count}}个</div>
-    <div id="log-list">
-      <div class="list" style="border-bottom: 0.8px solid #324157">
-        <div class="log-head"><input type="checkbox" v-model="checkAll" id="文件名" value="文件名">
-          <span class="log-name">文件名</span>
+      <div class="search">
+        <input type="text" placeholder="请输入关键字" v-model="keyWord">
+        <div v-show="isSearching" class="img-button close-btn" @click="close_search">
+          <i class="el-icon-circle-cross"></i>
         </div>
+        <div v-show="!isSearching" class="search-button" @click="searchLog"><i class="el-icon-search"></i></div>
+      </div>
+    </div>
+    <div class='title'>所有文件已加载，共{{items.length}}个</div>
+    <div id="log-list">
+      <div class="list-head" style="border-bottom: 0.8px solid #324157">
+        <div class="log-head">
+          <input type="checkbox" v-model="checkAll" id="文件名" value="文件名">
+          <div class="log-name">文件名</div>
+        </div>
+        <div class="uploader">上传者</div>
         <div class="date">日期</div>
         <div class="raw-log">原始日志</div>
         <div class="event-log">事件日志</div>
-        <div class="operations"></div>
       </div>
-      <div class="list" v-for="(item, index) in items" :class="{selectedItem: isSelected(index)}">
-        <div class="log-head">
-          <input type="checkbox" v-model="checked" :value="item.normalLog.id" @click="currClick(item,index)">
-          <span class="log-name" :title="item.normalLog.logName">
-            {{item.normalLog.logName}}</span>
-        </div>
-        <div class="date">
-          {{`${new Date(item.normalLog.createDate).getFullYear()}-${new Date(item.normalLog.createDate).getMonth() + 1}-${new Date(item.normalLog.createDate).getDate()}`}}
-        </div>
-        <div class="relation-logs raw-log" @click="jumpToRaw(index)" :title="item.rawLog ? item.rawLog.logName : '无'">
-          {{item.rawLog ? item.rawLog.logName : '无'}}
-        </div>
-        <div class="relation-logs event-log" @click="jumpToEvent(index)" :title="item.eventLog ? item.eventLog.logName : '无'">
-          {{item.eventLog ? item.eventLog.logName : '无'}}
-        </div>
-        <div class="operations">
-          <i class="el-icon-setting" title="生成事件日志" v-on:click="transferToEvent(index)"></i>
-          <img class="download-btn" title="下载" src="static/img/cloud_download.png"
-               @click="download(index)">
-          <i class="el-icon-share" v-show="item.normalLog.isShared==0"title="分享" @click="share(index)"></i>
-          <i class="el-icon-minus" v-show="item.normalLog.isShared!=0"title="取消分享" @click="share(index)"></i>
-          <i class="el-icon-delete" title="删除" @click="deleteLog(index)"></i>
+      <div class="list">
+        <div class="list-item" v-for="(item,index) in items" :class="{selectedItem: isSelected(index)}">
+          <div class="log-head">
+            <input type="checkbox" v-model="checked" :value="item.normalLog.id" @click="currClick(item,index)">
+            <div class="log-name" :title="item.normalLog.logName">{{item.normalLog.logName}}</div>
+          </div>
+          <div class="uploader">{{item.user.name}}</div>
+          <div class="date">
+            {{`${new Date(item.normalLog.createDate).getFullYear()}-${new Date(item.normalLog.createDate).getMonth() + 1}-${new Date(item.normalLog.createDate).getDate()}`}}
+          </div>
+          <div @click="jumpToRaw(index)" class="raw-log relation-logs" :title="item.rawLog ? item.rawLog.logName : '无'">
+            {{item.rawLog ? item.rawLog.logName : '无'}}
+          </div>
+          <div  @click="jumpToEvent(index)" class="event-log  relation-logs" :title="item.eventLog ? item.eventLog.logName : '无'">
+            {{item.eventLog ? item.eventLog.logName : '无'}}
+          </div>
+          <div class="operations">
+            <i class="el-icon-delete" title="删除" @click="deleteLog(index)"></i>
+          </div>
         </div>
       </div>
     </div>
+    <div class="block pageDiv">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="100"
+        layout=" prev, pager, next, jumper"
+        :total="total_items_num">
+      </el-pagination>
+    </div>
   </div>
-
 </template>
 
 <style lang="less" scoped rel="stylesheet/less">
   @import '~assets/colors.less';
   @import "~assets/layout.less";
 
-  .head {
+  .share-head {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    position: relative;
+    align-items: flex-end;
+    justify-content: space-between;
     padding-bottom: 30px;
-  }
-
-  .close-btn {
-    position: relative;
-    left: -50px;
-    top: 5px;
-    i {
-      color: #5c8aac;
-    }
   }
 
   .title {
@@ -78,45 +77,34 @@
     color: #b5b5b5;
   }
 
-  #searchBox {
-    margin-left: 300px;
-    background-color: @tab_selected;
-    color: @dark_theme;
-    text-align: center;
-    width: @search_width;
-    height: @search_height;
-    border-radius: @search_border-radius;
-    border: none;
-    outline-style: none;
-  }
-
-  #search_button {
-    width: 20px;
-    height: 20px;
-    position: relative;
-    left: -50px;
-    top: 5px;
+  .img-button {
     cursor: pointer;
   }
 
-  .list:hover {
+  .list-item:hover {
     background-color: @logList_Choose;
   }
 
-  .too-long-text{
+  .too-long-text {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
   #log-list {
     padding-top: 20px;
     margin-left: 10px;
     margin-right: 10px;
     font-size: 14px;
-    .list {
+    .list{
+      height: 530px;
+      overflow: auto;
+    }
+    .list-item, .list-head{
       img {
         width: 12px;
         height: 12px;
+        margin-right: 10px;
       }
       display: flex;
       flex-direction: row;
@@ -124,51 +112,55 @@
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
       .log-head {
-        flex:  0 0 200px;
+        flex: 0 0 25%;
         text-align: left;
         display: flex;
         flex-direction: row;
-        .log-name{
+        min-width: 220px;
+
+        .log-name {
           cursor: pointer;
-          width: 180px;
+          min-width: 200px;
+          flex: 0 0 25%;
           .too-long-text;
+          text-align: left;
         }
       }
       .operations {
-        flex: 0 0 150px;
-        color: @dark_theme;
-        i{
-          margin: 0 5px;
-          cursor: pointer;
+        flex: 0 0 5%;
+        min-width: 40px;
+        img {
+          width: 18px;
+          height: 18px;
+          position: relative;
+          top: 2px;
         }
       }
-      .date{
-        flex:0 0 120px;
+      .uploader {
+        flex: 0 0 8%;
+        min-width: 80px;
+      }
+      .date {
+        flex: 0 0 10%;
+        min-width: 90px;
         .too-long-text;
       }
-      .raw-log{
-        flex: 0 0 250px;
+      .raw-log {
+        flex: 0 0 25%;
+        min-width: 250px;
         .too-long-text;
       }
-      .normal-log{
-        flex: 0 0 250px;
+      .event-log {
+        flex: 0 0 25%;
+        min-width: 250px;
         .too-long-text;
       }
-      .event-log{
-        flex: 0 0 250px;
-        .too-long-text;
-      }
-    }
-    .selectedItem {
-      background-color: #cbd7ea;
     }
   }
-
 
 </style>
 
 <script>
-  import ElButton from "../../../../node_modules/element-ui/packages/button/src/button"
   import {mapActions} from 'vuex'
   export default{
     data(){
@@ -177,24 +169,24 @@
         totalAmount: [],
         items: [],
         isSearching: false,
-        keyWord: ''
+        keyWord: '',
+        currentPage: 1,
+        total_items_num: 10
       }
     },
     created(){
+      if(this.$store.getters.selectedLog.type === 1){
+        this.currentPage = parseInt(this.$store.getters.selectedLog.page)
+      }
       this.getTotalItems()
     },
     computed: {
-
-      count: function (item, index) {
-        let sum = this.items.length;
-        return sum;
-      },
       amount: function (item, index) {
-        return this.checked.length;
+        return this.items.length;
       },
       checkAll: {
         get: function () {
-          return this.checkedCount == this.items.length;
+          return this.checkedCount === this.items.length;
         },
         set: function (value) {
           let _this = this;
@@ -202,9 +194,9 @@
             this.totalAmount = [];
             this.checked = this.items.map(function (item) {
               item.checked = true;
-              let total = item.normalLog.id;
+              let total = item.rawLog.id;
               _this.totalAmount.push(total);
-              return item.normalLog.id;
+              return item.rawLog.id;
             })
           } else {
             this.checked = [];
@@ -221,22 +213,107 @@
         }
       }
     },
+
     methods: {
       ...mapActions(['selectLog', 'changeFilePath']),
+      handleCurrentChange(val) {
+        this.currentPage = val
+        if(this.isSearching){
+          this.searchLog()
+        }else{
+          this.getTotalItems()
+        }
+      },
       isSelected(index){
         return this.$store.getters.selectedLog.type === 1 && this.items[index].normalLog.id === this.$store.getters.selectedLog.id
       },
       jumpToRaw(index){
+
         if (this.items[index].rawLog) {
-          this.selectLog({type: 0, id: this.items[index].rawLog.id})
-          this.changeFilePath('1-1')
+          this.$api({method: 'getRawLogPage', query: {id: this.items[index].rawLog.id}}).then( res => {
+            this.selectLog({type: 0, id: this.items[index].rawLog.id, page: res.data.page})
+            this.changeFilePath('1-1')
+          }, err => {
+            this.$hint('网络出错','error')
+          })
+
         }
       },
       jumpToEvent(index){
         if (this.items[index].eventLog) {
-          this.selectLog({type: 2, id: this.items[index].eventLog.id})
-          this.changeFilePath('1-3')
+          this.$api({method: 'getEventLogPage', query: {id: this.items[index].eventLog.id}}).then( res => {
+            this.selectLog({type: 2, id: this.items[index].eventLog.id, page: res.data.page})
+            this.changeFilePath('1-3')
+          }, err => {
+            this.$hint('网络出错', 'error')
+          })
         }
+      },
+      searchLog(){
+        this.totalAmount = []
+        this.checkedAll = false
+        this.checked = []
+        this.$api({method: 'searchNormalLog', query: {keyWord: this.keyWord}}).then(res => {
+          console.log(res)
+          this.items = res.data.logGroups
+          this.total_items_num = res.data.pageNum * 10
+          this.isSearching = true
+        })
+      },
+      deleteLog: function (index) {
+
+        this.$api({method: 'deleteNormalLog', opts: {body: {idList: [this.items[index].rawLog.id]}}}).then((res) => {
+          if (parseInt(res.data.code) === 1) {
+            this.$hint('删除成功', 'success');
+            this.getTotalItems()
+            this.checked = [];
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              item.checked = false;
+            });
+          } else {
+            this.$hint('不明原因失败，建议刷新', 'error')
+          }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
+        })
+      },
+      deleteSome: function () {
+        this.$api({
+          method: 'deleteNormalLog',
+          opts: {body: {idList: this.checked}}
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 1) {
+            this.$hint('删除成功', 'success')
+            this.getTotalItems()
+            this.checked = [];
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              item.checked = false;
+            });
+          } else {
+            this.$hint('不明原因失败，建议刷新', 'error')
+          }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
+        })
+
+      },
+      close_search(){
+        this.isSearching = false
+        this.items = this.getTotalItems()
+        this.keyWord = ''
+      },
+      getTotalItems(){
+        const _this = this
+        this.$api({method: 'getNormalLog', query: {page: this.currentPage}}).then((res) => {
+          console.log(res)
+          _this.items = res.data.logGroups
+          _this.total_items_num = res.data.pageNum * 10
+        })
       },
       currClick: function (item, index) {
         let _this = this;
@@ -266,148 +343,10 @@
           }
         }
       },
-
-      upload(){
-        this.$modal({type: 'upload', data: {type: 'normal'}}).then((res) => {
-          console.log(res)
-          this.getTotalItems()
-        })
-      },
-
-      transferToEvent: function (index) {
-        this.$api({method: 'toEventLog', query: {id: this.items[index].normalLog.id}}).then((res) => {
-          console.log(res.data)
-          if (res.data.code === 1) {
-            this.$hint('生成成功', 'success')
-            this.getTotalItems()
-          } else {
-            this.$hint('请使用格式正确的规范化日志进行转换', 'warn')
-          }
-        }, err => {
-          if(err.status === 400){
-            this.$hint('服务器中没有该文件，请删除后重新上传','warn')
-          }
-        })
-      },
-
-      download: function (index) {
-        this.$api({method: "downLoadNormalLog", query: {id: this.items[index].normalLog.id}}).then((res) => {
-          console.log(res.data)
-          this.createAndDownloadFile(this.items[index].normalLog.logName, res.data)
-        })
-      },
-      createAndDownloadFile(fileName, content) {
-        let aTag = document.createElement('a');
-        let blob = new Blob([content]);
-        aTag.download = fileName;
-        aTag.href = URL.createObjectURL(blob);
-        aTag.click();
-        URL.revokeObjectURL(blob);
-      },
-
-      deleteLog: function (index) {
-
-        this.$api({
-          method: 'deleteNormalLog',
-          opts: {body: {idList: [this.items[index].normalLog.id]}}
-        }).then((res) => {
-
-          console.log(res.data)
-          if (res.data.code === 1) {
-            this.$hint('删除成功', 'success')
-            this.getTotalItems()
-            this.checked = [];
-            this.totalAmount = [];
-            this.items.forEach(function (item, index) {
-              item.checked = false;
-            });
-          } else {
-            this.$hint('删除失败', 'error')
-          }
-        })
-
-      },
-      deleteSome: function () {
-
-        this.$api({
-          method: 'deleteNormalLog',
-          opts: {body: {idList: this.checked}}
-        }).then((res) => {
-          console.log(res.data)
-          if (res.data.code === 1) {
-            this.$hint('删除成功', 'success')
-            this.getTotalItems()
-            this.checked = [];
-            this.totalAmount = [];
-            this.items.forEach(function (item, index) {
-              item.checked = false;
-            });
-          } else {
-            this.$hint('删除失败', 'error')
-          }
-        })
-
-      },
-
-      shareSome(){
-        this.$api({method: 'shareNormalLog', body: {idList: this.checked}}).then(res => {
-          if (res.data.code === 1) {
-            this.$hint('分享成功', 'success')
-            this.getTotalItems()
-          } else {
-            this.$hint('分享失败', 'warn')
-          }
-
-        })
-      },
-      share(index){
-        if (this.items[index].normalLog.isShared === 0) {
-          this.$api({method: 'shareNormalLog', body: {idList: [this.items[index].normalLog.id]}}).then(res => {
-            if (res.data.code === 1) {
-              this.$hint('分享成功', 'success')
-              this.getTotalItems()
-            } else {
-              this.$hint('分享失败', 'warn')
-            }
-          })
-        } else {
-          this.$api({method: 'unShareNormalLog', body: {idList: [this.items[index].normalLog.id]}}).then(res => {
-            if (res.data.code === 1) {
-              this.$hint('取消分享成功', 'success')
-              this.getTotalItems()
-            } else {
-              this.$hint('取消分享失败', 'warn')
-            }
-          })
-        }
-      },
-
-      searchLog () {
-        this.totalAmount = []
-        this.checkedAll = false
-        this.checked = []
-        this.$api({method: 'searchNormalLog', query: {keyWord: this.keyWord}}).then(res => {
-          console.log(res)
-          this.items = res.data.logGroups
-          this.isSearching = true
-        })
-      },
-      close_search(){
-        this.isSearching = false
-        this.getTotalItems()
-        this.keyWord = ''
-      },
-      getTotalItems(){
-        const _this = this
-        this.$api({method: 'getNormalLog'}).then((res) => {
-          console.log(res)
-          _this.items = res.data.logGroups
-        })
-      }
     },
     watch: {
       checked: function () {
-        this.amount = this.checked.length;
+        this.amount = this.items.length;
       }
     }
   }

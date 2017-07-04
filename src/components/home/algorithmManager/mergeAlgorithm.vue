@@ -1,7 +1,7 @@
 <template>
   <div class="algorithm">
     <div class="head">
-      <el-button type="primary" icon="plus" @click="upload">添加</el-button>
+      <el-button type="primary" icon="plus" @click="addMethod">添加</el-button>
       <el-button @click="shareSome" icon="share">启用</el-button>
       <el-button @click="deleteSome" icon="delete">删除</el-button>
     </div>
@@ -218,8 +218,8 @@
 
       },
 
-      upload(){
-        this.$modal({type: 'upload', data: {type: 'addMerge'}}).then((res) => {
+      addMethod(){
+        this.$modal({type: 'upload', data: {type: 'merge'}}).then((res) => {
           console.log(res)
           this.getTotalItems()
         })

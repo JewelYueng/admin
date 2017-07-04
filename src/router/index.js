@@ -1,7 +1,6 @@
 import Vue from "vue"
 import Router from "vue-router"
 import FilesManager from "components/home/FilesManager"
-import Login from "components/login/index"
 import Home from "components/home/index"
 import algorithmManager from "components/home/algorithmManager/index"
 import userManager from "components/home/userManager"
@@ -40,11 +39,6 @@ export default new Router({
           component: userManager
         }
       ]
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: Login
-    },
+    }
   ]
 })

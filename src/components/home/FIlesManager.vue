@@ -3,17 +3,17 @@
     <div class="left-side">
       <el-menu :default-active="current_index" class="el-menu-vertical-demo" @select="handleSelect">
         <el-submenu index="1">
-          <template slot="title"><i class="el-icon-message"></i>我的日志</template>
+          <template slot="title"><i class="el-icon-message"></i>全部日志</template>
           <el-menu-item index="1-1">原始日志</el-menu-item>
           <el-menu-item index="1-2">规范化日志</el-menu-item>
           <el-menu-item index="1-3">事件日志</el-menu-item>
         </el-submenu>
-        <el-submenu index="2">
-          <template slot="title"><i class="el-icon-message"></i>分享列表</template>
-          <el-menu-item index="2-1">原始日志</el-menu-item>
-          <el-menu-item index="2-2">规范化日志</el-menu-item>
-          <el-menu-item index="2-3">事件日志</el-menu-item>
-        </el-submenu>
+        <!--<el-submenu index="2">-->
+          <!--<template slot="title"><i class="el-icon-message"></i>分享列表</template>-->
+          <!--<el-menu-item index="2-1">原始日志</el-menu-item>-->
+          <!--<el-menu-item index="2-2">规范化日志</el-menu-item>-->
+          <!--<el-menu-item index="2-3">事件日志</el-menu-item>-->
+        <!--</el-submenu>-->
       </el-menu>
     </div>
     <div id="right-window">
@@ -29,7 +29,8 @@
   .left-side {
     background-color: @light_theme;
     width: @left_side_width;
-    height: @main_height;
+    min-width: 200px;
+    height: @main_height - 50px;
     box-sizing: border-box;
   }
 
@@ -40,10 +41,12 @@
 
   #right-window {
     width: @right_side_width;
-    height: @main_height - 30px;
+    height: @main_height;
     box-sizing: border-box;
     padding: 30px 30px 0 30px;
     overflow: auto;
+    min-width: 1020px;
+    position: relative;
   }
   .relation-logs{
     cursor: pointer;
@@ -53,6 +56,10 @@
     position: relative;
     height: 20px;
     top: 2px;
+  }
+
+  .selectedItem {
+    background-color: #cbd7ea;
   }
 
   .button {
@@ -76,11 +83,17 @@
     }
   }
 
+  .head {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    padding-bottom: 30px;
+  }
   .search {
     display: flex;
     flex-direction: row;
     input {
-      margin-left: 300px;
       background-color: @light_theme;
       color: @dark_theme;
       text-align: center;
@@ -108,15 +121,23 @@
       }
     }
   }
+  .pageDiv {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
 </style>
 
 <script>
   import MyRawLog from 'components/home/logList/RawLog'
   import MyNormalLog from 'components/home/logList/NormalLog'
   import MyEventLog from 'components/home/logList/EventLog'
-  import ShareRawLog from 'components/home/shareList/RawLogDetail'
-  import ShareNormalLog from 'components/home/shareList/NormalLogDetail'
-  import ShareEventLog from 'components/home/shareList/EventLogDetail'
+//  import ShareRawLog from 'components/home/shareList/RawLogDetail'
+//  import ShareNormalLog from 'components/home/shareList/NormalLogDetail'
+//  import ShareEventLog from 'components/home/shareList/EventLogDetail'
+
   import {mapActions} from 'vuex'
 
   export default{
@@ -128,9 +149,9 @@
           "1-1": MyRawLog,
           "1-2": MyNormalLog,
           "1-3": MyEventLog,
-          "2-1": ShareRawLog,
-          "2-2": ShareNormalLog,
-          "2-3": ShareEventLog
+//          "2-1": ShareRawLog,
+//          "2-2": ShareNormalLog,
+//          "2-3": ShareEventLog
         }
       }
     },
@@ -138,9 +159,9 @@
       MyRawLog,
       MyNormalLog,
       MyEventLog,
-      ShareRawLog,
-      ShareNormalLog,
-      ShareEventLog
+//      ShareRawLog,
+//      ShareNormalLog,
+//      ShareEventLog
     },
     created(){
       this.changeHomePath('/')
