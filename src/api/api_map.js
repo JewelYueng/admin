@@ -56,7 +56,7 @@ export default {
   "register": [POST,'/user/register'],
   "forbidUser": [POST,'/admin/user/forbid'],
   "activeUser": [POST,'/admin/user/active'],
-  "deleteUser": [DELETE,'/admin/user/active'],
+  "deleteUser": [DELETE,'/admin/user/delete'],
   "getUsers": [GET,'/admin/user/'],
   "userInfo": [GET,'/user/getUser'],
 

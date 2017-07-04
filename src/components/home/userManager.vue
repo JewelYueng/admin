@@ -25,7 +25,7 @@
         <i class="el-icon-share" v-show="item.state==3" title="恢复" @click="changeState(index)"></i>
         <i class="el-icon-minus" v-show="item.state==1" title="冻结" @click="changeState(index)"></i>
         <div class="operations">
-          <i class="el-icon-delete" title="删除" @click="deleteUser"></i>
+          <i class="el-icon-delete" title="删除" @click="deleteUser(index)"></i>
         </div>
       </div>
     </div>

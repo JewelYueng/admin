@@ -21,7 +21,7 @@
           <i class="el-icon-share" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
           <i class="el-icon-minus" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
           <div class="operations">
-            <i class="el-icon-delete" title="删除" @click="deleteMethod" ></i>
+            <i class="el-icon-delete" title="删除" @click="deleteMethod(index)" ></i>
           </div>
         </div>
       </div>
