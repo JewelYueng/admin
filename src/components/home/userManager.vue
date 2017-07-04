@@ -22,8 +22,8 @@
           <span>-->{{item.id}}</div>
         <div class="userName">{{item.name}}</div>
         <div class="email">{{item.email}}</div>
-        <i class="el-icon-share" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
-        <i class="el-icon-minus" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
+        <i class="el-icon-share" v-show="item.state==3" title="恢复" @click="changeState(index)"></i>
+        <i class="el-icon-minus" v-show="item.state==1" title="冻结" @click="changeState(index)"></i>
         <div class="operations">
           <i class="el-icon-delete" title="删除" @click="deleteUser"></i>
         </div>
@@ -111,7 +111,7 @@
       }
     },
     created(){
-//      this.getTotalItems()
+     this.getTotalItems()
     },
     computed: {
       /*amount: function (item, index) {
@@ -150,9 +150,9 @@
 
       changeState(index){
 
-        if (parseInt(this.items[index].state)=== 0) {
+        if (parseInt(this.items[index].state)=== 3) {
           this.$api({method: 'activeUser', body: {idList: [this.items[index].id]}}).then(res => {
-            if (res.data.code === 1) {
+            if (parseInt(res.data.code) === 200) {
               this.$hint('恢复成功', 'success')
               this.getTotalItems()
             } else {
@@ -163,8 +163,8 @@
             this.$hint(err.data.msg, 'error')
           })
         } else {
-          this.$api({method: 'freezeUser', body: {idList: [this.items[index].id]}}).then(res => {
-            if (res.data.code === 1) {
+          this.$api({method: 'forbidUser', body: {idList: [this.items[index].id]}}).then(res => {
+            if (parseInt(res.data.code)  === 200) {
               this.$hint('冻结成功', 'success')
               this.getTotalItems()
             } else {
@@ -195,7 +195,7 @@
         }).then((res) => {
 
           console.log(res.data)
-          if (res.data.code === 1) {
+          if (parseInt(res.data.code)  === 200) {
             this.$hint('删除成功', 'success')
             this.getTotalItems();
 //            this.checked = [];

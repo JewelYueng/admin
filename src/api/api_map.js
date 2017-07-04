@@ -54,7 +54,7 @@ export default {
 //  用户系统的接口
   "login": [POST, '/home/login'],
   "register": [POST,'/user/register'],
-  "freezeUser": [POST,'/admin/user/freeze'],
+  "forbidUser": [POST,'/admin/user/forbid'],
   "activeUser": [POST,'/admin/user/active'],
   "deleteUser": [DELETE,'/admin/user/active'],
   "getUsers": [GET,'/admin/user/'],
