@@ -54,4 +54,22 @@ export default {
 //  用户系统的接口
   "login": [POST, '/home/login'],
   "register": [POST,'/user/register'],
+  "freezeUser": [POST,'/admin/user/freeze'],
+  "activeUser": [POST,'/admin/user/active'],
+  "deleteUser": [DELETE,'/admin/user/active'],
+  "getUsers": [GET,'/admin/user/'],
+  "userInfo": [GET,'/user/getUser'],
+
+  //管理员接口
+  "miningMethod": [GET, '/admin/mining/method'],
+  "addMining": [POST, '/admin/mining/add'],
+  "activeMining": [POST, '/admin/mining/active'],
+  "freezeMining": [POST, '/admin/mining/freeze'],
+  "deleteMining": [DELETE, '/admin/mining/delete'],
+
+  "mergeMethod": [GET, '/admin/merge/method'],
+  "addMerge": [POST, '/admin/merge/add'],
+  "activeMerge": [POST, '/admin/merge/active'],
+  "freezeMerge": [POST, '/admin/merge/freeze'],
+  "deleteMerge": [DELETE, '/admin/merge/delete'],
 }

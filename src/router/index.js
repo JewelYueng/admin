@@ -3,6 +3,8 @@ import Router from "vue-router"
 import FilesManager from "components/home/FilesManager"
 import Login from "components/login/index"
 import Home from "components/home/index"
+import algorithmManager from "components/home/algorithmManager/index"
+import userManager from "components/home/userManager"
 
 Vue.use(Router)
 
@@ -26,6 +28,16 @@ export default new Router({
           path: "files",
           name: 'files',
           component: FilesManager
+        },
+        {
+          path: "methods",
+          name: 'methods',
+          component: algorithmManager
+        },
+        {
+          path: "users",
+          name: 'users',
+          component: userManager
         }
       ]
     },
