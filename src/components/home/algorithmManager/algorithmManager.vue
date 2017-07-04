@@ -250,6 +250,34 @@
           this.$hint(err.data.msg,'error')
         })
 
+      },
+      currClick: function (item, index) {
+        let _this = this;
+        if (typeof item.checked === 'undefined') {
+          this.$set(item, 'checked', true);
+          let total = item.id;
+          this.totalAmount.push(total);
+          console.log(this.totalAmount);
+        } else {
+          item.checked = !item.checked;
+          if (item.checked) {
+            this.totalAmount = [];
+            this.items.map(function (item, index) {
+              if (item.checked) {
+                let total = item.id;
+                _this.totalAmount.push(total);
+              }
+            });
+          } else {
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              if (item.checked) {
+                let total = item.id;
+                _this.totalAmount.push(total);
+              }
+            });
+          }
+        }
       }
 
     }

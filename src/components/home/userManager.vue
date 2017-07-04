@@ -1,15 +1,14 @@
 <template>
   <div class="users">
     <div class="head">
-      <!--<el-button @click="deleteSome" icon="delete">删除</el-button>
-      <el-button @click="changeSome" icon="edit">状态改变</el-button>-->
+      <el-button @click="shareSome" icon="share">恢复</el-button>
+      <el-button @click="deleteSome" icon="delete">删除</el-button>
     </div>
-    <div class='title'>所有用户已加载，共{{items.length}}个</div>
+    <div class='title'>所有用户已加载，共{{count}}个</div>
     <div id="user-list">
       <div class="list-head" style="border-bottom: 0.8px solid #324157">
-        <div class="userID">
-         <!-- <input type="checkbox" v-model="checkAll" id="用户ID" value="用户ID">
-          <span>-->用户ID</div>
+        <div><input type="checkbox" v-model="checkAll" id="用户" value="用户"></div>
+        <div class="userID">用户ID</div>
         <div class="userName">用户名</div>
         <div class="email">注册邮箱</div>
         <div class="state">状态</div>
@@ -17,9 +16,9 @@
       </div>
       <div class="list-body">
       <div class="list-item" v-for="(item,index) in items">
-        <div class="userID">
-          <!--<input type="checkbox" v-model="checked" :value="item.users.id" @click="currClick(item,index)">
-          <span>-->{{item.id}}</div>
+        <div><input type="checkbox" v-model="checked" :value="item.id" @click="currClick(item,index)">
+        </div>
+        <div class="userID">{{item.id}}</div>
         <div class="userName">{{item.name}}</div>
         <div class="email">{{item.email}}</div>
         <i class="el-icon-share" v-show="item.state==3" title="恢复" @click="changeState(index)"></i>
@@ -107,16 +106,21 @@
   export default{
     data(){
       return {
-        items: []
+        items: [],
+        checked: [],
+        totalAmount: []
       }
     },
     created(){
      this.getTotalItems()
     },
     computed: {
-      /*amount: function (item, index) {
-        return this.checked.length;
+
+      count: function (item, index) {
+        let sum = this.items.length;
+        return sum;
       },
+
       checkAll: {
         get: function () {
           return this.checkedCount === this.items.length;
@@ -127,9 +131,9 @@
             this.totalAmount = [];
             this.checked = this.items.map(function (item) {
               item.checked = true;
-              let total = item.eventLog.id;
+              let total = item.id;
               _this.totalAmount.push(total);
-              return item.eventLog.id;
+              return item.id;
             })
           } else {
             this.checked = [];
@@ -140,14 +144,82 @@
           }
         }
       },
+
       checkedCount: {
         get: function () {
           return this.checked.length;
         }
-      }*/
+      }
+
     },
     methods:{
 
+      currClick: function (item, index) {
+        let _this = this;
+        if (typeof item.checked === 'undefined') {
+          this.$set(item, 'checked', true);
+          let total = item.id;
+          this.totalAmount.push(total);
+          console.log(this.totalAmount);
+        } else {
+          item.checked = !item.checked;
+          if (item.checked) {
+            this.totalAmount = [];
+            this.items.map(function (item, index) {
+              if (item.checked) {
+                let total = item.id;
+                _this.totalAmount.push(total);
+              }
+            });
+          } else {
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              if (item.checked) {
+                let total = item.id;
+                _this.totalAmount.push(total);
+              }
+            });
+          }
+        }
+      },
+      deleteSome: function () {
+        this.$api({
+          method: 'deleteUser',
+          opts: {body: {idList: this.checked}}
+        }).then((res) => {
+          console.log(res.data)
+          if (parseInt(res.data.code) === 200) {
+            this.$hint('删除成功', 'success')
+            this.getTotalItems()
+            this.checked = [];
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              item.checked = false;
+            });
+          } else {
+            this.$hint('不明原因失败，建议刷新', 'error')
+          }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
+        })
+
+      },
+
+      shareSome(){
+        this.$api({method: 'activeUser', body: {idList: this.checked}}).then(res => {
+          if (parseInt(res.data.code) === 200) {
+            this.$hint('恢复成功', 'success')
+            this.getTotalItems()
+          } else {
+            this.$hint('不明原因失败，建议刷新', 'warn')
+          }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
+        })
+
+      },
       changeState(index){
 
         if (parseInt(this.items[index].state)=== 3) {
