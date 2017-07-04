@@ -16,23 +16,14 @@
         <div class="operations"></div>
       </div>
       <div class="list-body">
-      <div class="list-item" v-for="item in items">
+      <div class="list-item" v-for="(item,index) in items">
         <div class="userID">
           <!--<input type="checkbox" v-model="checked" :value="item.users.id" @click="currClick(item,index)">
           <span>-->{{item.id}}</div>
         <div class="userName">{{item.name}}</div>
         <div class="email">{{item.email}}</div>
-        <div class="state">
-          <el-switch
-            v-model="item.state"
-            on-color="#13ce66"
-            off-color="#ff4949"
-            on-text="激活"
-            off-text="冻结"
-            on-value="1"
-            off-value="0"
-            @change ="changeState">
-          </el-switch></div>
+        <i class="el-icon-share" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
+        <i class="el-icon-minus" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
         <div class="operations">
           <i class="el-icon-delete" title="删除" @click="deleteUser"></i>
         </div>
@@ -116,14 +107,7 @@
   export default{
     data(){
       return {
-        items: [
-              {"id":"1","name":"1","email":"1@1.com", "password":"6666","state":1},
-            {"id":"2","name":"2","email":"2@2.com", "password":"2","state":0},
-            {"id":"3","name":"3", "email":"3@3.com","password":"3","state":1},
-            {"id":"4","name":"4","email":"4@4.com", "password":"4","state":0},
-            {"id":"53c3a18c-8148-4226-aaf9-fbcc0365a621", "name":"myUserName","email":"574335078@qq.com", "password":"12354","state":1},
-            {"id":"c8a9a6c1-a2ac-4b6a-8490-ee78a61187f3","name":"myName", "email":"5@5.com","password":"123456","state":1}
-        ]
+        items: []
       }
     },
     created(){
@@ -164,15 +148,42 @@
     },
     methods:{
 
-      changeState(val){
-        console.log(val)
+      changeState(index){
+
+        if (parseInt(this.items[index].state)=== 0) {
+          this.$api({method: 'activeUser', body: {idList: [this.items[index].id]}}).then(res => {
+            if (res.data.code === 1) {
+              this.$hint('恢复成功', 'success')
+              this.getTotalItems()
+            } else {
+              this.$hint('不明原因失败，建议刷新', 'error')
+            }
+          }, err => {
+            console.log(err)
+            this.$hint(err.data.msg, 'error')
+          })
+        } else {
+          this.$api({method: 'freezeUser', body: {idList: [this.items[index].id]}}).then(res => {
+            if (res.data.code === 1) {
+              this.$hint('冻结成功', 'success')
+              this.getTotalItems()
+            } else {
+              this.$hint('不明原因失败，建议刷新', 'error')
+            }
+          }, err => {
+            console.log(err)
+            this.$hint(err.data.msg, 'error')
+          })
+        }
+
+
       },
 
       getTotalItems(){
         const _this = this
         this.$api({method: 'getUsers'}).then((res) => {
           console.log(res)
-          _this.items = res.data.users
+          _this.items = res.data.users;
         })
       },
 
@@ -180,18 +191,18 @@
 
         this.$api({
           method: 'deleteUser',
-          opts: {body: {idList: [this.items[index].methods.id]}}
+          opts: {body: {idList: [this.items[index].id]}}
         }).then((res) => {
 
           console.log(res.data)
           if (res.data.code === 1) {
             this.$hint('删除成功', 'success')
-            this.getTotalItems()
-            this.checked = [];
-            this.totalAmount = [];
-            this.items.forEach(function (item, index) {
-              item.checked = false;
-            });
+            this.getTotalItems();
+//            this.checked = [];
+//            this.totalAmount = [];
+//            this.items.forEach(function (item, index) {
+//              item.checked = false;
+//            });
           } else {
             this.$hint('不明原因失败，建议刷新', 'error')
           }
@@ -200,7 +211,7 @@
           this.$hint(err.data.msg,'error')
         })
 
-      },
+      }
 
     }
 

@@ -163,12 +163,12 @@
           console.log(res.data)
           if (res.data.code === 1) {
             this.$hint('删除成功', 'success')
-            this.getTotalItems()
-            this.checked = [];
-            this.totalAmount = [];
-            this.items.forEach(function (item, index) {
-              item.checked = false;
-            });
+            this.getTotalItems();
+//            this.checked = [];
+//            this.totalAmount = [];
+//            this.items.forEach(function (item, index) {
+//              item.checked = false;
+//            });
           } else {
             this.$hint('不明原因失败，建议刷新', 'error')
           }

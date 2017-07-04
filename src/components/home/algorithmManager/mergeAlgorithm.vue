@@ -20,7 +20,6 @@
           </el-tooltip></div>
           <i class="el-icon-share" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
           <i class="el-icon-minus" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
-
           <div class="operations">
             <i class="el-icon-delete" title="删除" @click="deleteMethod" ></i>
           </div>
@@ -168,12 +167,12 @@
           console.log(res.data)
           if (res.data.code === 1) {
             this.$hint('删除成功', 'success')
-            this.getTotalItems()
-            this.checked = [];
-            this.totalAmount = [];
-            this.items.forEach(function (item, index) {
-              item.checked = false;
-            });
+            this.getTotalItems();
+//            this.checked = [];
+//            this.totalAmount = [];
+//            this.items.forEach(function (item, index) {
+//              item.checked = false;
+//            });
           } else {
             this.$hint('不明原因失败，建议刷新', 'error')
           }
