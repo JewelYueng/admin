@@ -46,10 +46,10 @@
             {{item.normalLog ? item.normalLog.logName : '无'}}
           </div>
           <div class="merge-relation">
-            <div v-if="item.eventLog.mergeRelationLogs" class="relation1" @click="selectedRel(index,0)"
+            <div v-if="item.eventLog.mergeRelationLogs" class="relation1 merge-relation" @click="selectedRel(index,0)"
                  :title="item.eventLog.mergeRelationLogs[0].logName">{{item.eventLog.mergeRelationLogs[0].logName}}
             </div>
-            <div v-if="item.eventLog.mergeRelationLogs" class="relation2" @click="selectedRel(index,1)"
+            <div v-if="item.eventLog.mergeRelationLogs" class="relation2 merge-relation" @click="selectedRel(index,1)"
                  :title="item.eventLog.mergeRelationLogs[1].logName">{{item.eventLog.mergeRelationLogs[1].logName}}
             </div>
             <div v-show="!item.eventLog.mergeRelation">没有融合来源</div>
@@ -121,22 +121,25 @@
       width: 100%;
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
+      justify-content: center;
       .log-head {
         flex: 0 0 20%;
         text-align: left;
         display: flex;
         flex-direction: row;
-        min-width: 200px;
+        min-width: 210px;
+        justify-content: center;
+        align-items: center;
         .log-name {
           cursor: pointer;
           min-width: 180px;
-          flex: 0 0 18%;
+          flex: 0 0 19%;
           .too-long-text;
           text-align: left;
         }
       }
       .operations {
-        flex: 0 0 10%;
+        flex: 0 0 6%;
         min-width: 40px;
         img {
           width: 18px;
@@ -170,7 +173,8 @@
       }
       .merge-relation {
         flex: 0 0 15%;
-        min-width: 150px;
+        min-width: 160px;
+        .too-long-text;
       }
     }
   }
