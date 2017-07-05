@@ -85,12 +85,11 @@
     background-color: @logList_Choose;
   }
 
-  .too-long-text {
+  .too-long-text{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
   #log-list {
     padding-top: 20px;
     margin-left: 10px;
@@ -286,7 +285,7 @@
         }).then((res) => {
           console.log(res.data)
           if (res.data.code === 1) {
-            this.$hint('删除成功', 'success')
+            this.$hint('批量删除成功', 'success')
             this.getTotalItems()
             this.checked = [];
             this.totalAmount = [];
