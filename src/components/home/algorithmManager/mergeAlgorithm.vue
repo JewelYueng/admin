@@ -15,18 +15,22 @@
         <div class="operations"></div>
       </div>
       <div class="list-body">
-        <div class="list-item" v-for="(item,index) in items" >
+        <div class="list-item" v-for="(item,index) in items">
           <div><input type="checkbox" v-model="checked" :value="item.id" @click="currClick(item,index)">
           </div>
           <div class="methods-name">{{item.name}}</div>
-          <div class="description"><el-tooltip placement="top">
-            <div slot="content">{{item.description}}</div>
-            <div>说明</div>
-          </el-tooltip></div>
-          <i class="el-icon-share" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
-          <i class="el-icon-minus" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
+          <div class="description">
+            <el-tooltip placement="top">
+              <div slot="content">{{item.description}}</div>
+              <div>说明</div>
+            </el-tooltip>
+          </div>
+          <div class="state">
+            <i class="el-icon-circle-check" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
+            <i class="el-icon-circle-close" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
+          </div>
           <div class="operations">
-            <i class="el-icon-delete" title="删除" @click="deleteMethod(index)" ></i>
+            <i class="el-icon-delete" title="删除" @click="deleteMethod(index)"></i>
           </div>
         </div>
       </div>
@@ -66,7 +70,7 @@
     margin-left: 10px;
     margin-right: 10px;
     font-size: 14px;
-    .list-head , .list-item {
+    .list-head, .list-item {
       display: flex;
       flex-direction: row;
       width: 100%;
@@ -76,10 +80,17 @@
         flex: 0 0 300px;
         .too-long-text;
       }
-      .state{
+      .state {
         flex: 0 0 300px;
+        cursor: pointer;
+        .el-icon-circle-check{
+          color: #13CE66
+        }
+        .el-icon-circle-close{
+          color: #F7BA2A;
+        }
       }
-      .description{
+      .description {
         flex: 0 0 300px;
       }
       .operations {
@@ -89,6 +100,7 @@
           margin: 0 5px;
           cursor: pointer;
           font-size: 18px;
+          cursor: pointer;
         }
       }
     }
@@ -106,8 +118,8 @@
       return {
         //methodState: "state",
         items: [],
-       checked: [],
-         totalAmount: []
+        checked: [],
+        totalAmount: []
       }
     },
     created(){
@@ -148,8 +160,8 @@
           return this.checked.length;
         }
       }
-      },
-    methods:{
+    },
+    methods: {
 
       deleteSome: function () {
         this.$api({
@@ -190,7 +202,7 @@
 
       },
       changeState(index){
-        if (parseInt(this.items[index].state)=== 0) {
+        if (parseInt(this.items[index].state) === 0) {
           this.$api({method: 'activeMerge', body: {idList: [this.items[index].id]}}).then(res => {
             if (res.data.code === 1) {
               this.$hint('启用成功', 'success')
@@ -254,7 +266,7 @@
           }
         }, err => {
           console.log(err)
-          this.$hint(err.data.msg,'error')
+          this.$hint(err.data.msg, 'error')
         })
 
       },

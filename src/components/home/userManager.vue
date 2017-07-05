@@ -15,19 +15,21 @@
         <div class="operations"></div>
       </div>
       <div class="list-body">
-      <div class="list-item" v-for="(item,index) in items">
-        <div><input type="checkbox" v-model="checked" :value="item.id" @click="currClick(item,index)">
-        </div>
-        <div class="userID">{{item.id}}</div>
-        <div class="userName">{{item.name}}</div>
-        <div class="email">{{item.email}}</div>
-        <i class="el-icon-share" v-show="item.state==3" title="恢复" @click="changeState(index)"></i>
-        <i class="el-icon-minus" v-show="item.state==1" title="冻结" @click="changeState(index)"></i>
-        <div class="operations">
-          <i class="el-icon-delete" title="删除" @click="deleteUser(index)"></i>
+        <div class="list-item" v-for="(item,index) in items">
+          <div><input type="checkbox" v-model="checked" :value="item.id" @click="currClick(item,index)">
+          </div>
+          <div class="userID">{{item.id}}</div>
+          <div class="userName">{{item.name}}</div>
+          <div class="email">{{item.email}}</div>
+          <div class="state">
+            <i class="el-icon-circle-check" v-show="item.state==3" title="恢复" @click="changeState(index)" ></i>
+            <i class="el-icon-circle-close" v-show="item.state==1" title="冻结" @click="changeState(index)"></i>
+          </div>
+          <div class="operations">
+            <i class="el-icon-delete" title="删除" @click="deleteUser(index)"></i>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -65,23 +67,30 @@
     margin-left: 10px;
     margin-right: 10px;
     font-size: 14px;
-    .list-head , .list-item {
+    .list-head, .list-item {
       display: flex;
       flex-direction: row;
       width: 100%;
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
-      .userID{
+      .userID {
         flex: 0 0 300px;
       }
       .userName {
         width: 300px;
         .too-long-text;
       }
-      .state{
+      .state {
         flex: 0 0 300px;
+        cursor: pointer;
+        .el-icon-circle-check{
+          color: #13CE66
+        }
+        .el-icon-circle-close{
+          color: #F7BA2A;
+        }
       }
-      .email{
+      .email {
         flex: 0 0 300px;
       }
       .operations {
@@ -91,6 +100,7 @@
           margin: 0 5px;
           cursor: pointer;
           font-size: 18px;
+
         }
       }
     }
@@ -112,7 +122,7 @@
       }
     },
     created(){
-     this.getTotalItems()
+      this.getTotalItems()
     },
     computed: {
 
@@ -152,7 +162,7 @@
       }
 
     },
-    methods:{
+    methods: {
 
       currClick: function (item, index) {
         let _this = this;
@@ -222,7 +232,7 @@
       },
       changeState(index){
 
-        if (parseInt(this.items[index].state)=== 3) {
+        if (parseInt(this.items[index].state) === 3) {
           this.$api({method: 'activeUser', body: {idList: [this.items[index].id]}}).then(res => {
             if (parseInt(res.data.code) === 200) {
               this.$hint('恢复成功', 'success')
@@ -236,7 +246,7 @@
           })
         } else {
           this.$api({method: 'forbidUser', body: {idList: [this.items[index].id]}}).then(res => {
-            if (parseInt(res.data.code)  === 200) {
+            if (parseInt(res.data.code) === 200) {
               this.$hint('冻结成功', 'success')
               this.getTotalItems()
             } else {
@@ -267,7 +277,7 @@
         }).then((res) => {
 
           console.log(res.data)
-          if (parseInt(res.data.code)  === 200) {
+          if (parseInt(res.data.code) === 200) {
             this.$hint('删除成功', 'success')
             this.getTotalItems();
 //            this.checked = [];
@@ -280,7 +290,7 @@
           }
         }, err => {
           console.log(err)
-          this.$hint(err.data.msg,'error')
+          this.$hint(err.data.msg, 'error')
         })
 
       }
