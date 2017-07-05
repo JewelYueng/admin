@@ -19,12 +19,13 @@
           <input type="checkbox" v-model="checkAll" id="文件名" value="文件名">
           <div class="log-name">文件名</div>
         </div>
+        <div class="state">分享状态</div>
         <div class="uploader">上传者</div>
         <div class="date">日期</div>
         <div class="raw-log">原始日志</div>
         <div class="normal-log">规范化日志</div>
         <div class="merge-relation">融合来源</div>
-        <div class="operations"></div>
+        <div class="operations">操作</div>
       </div>
       <div class="list">
         <div class="list-item" v-for="(item,index) in items" :class="{selectedItem: isSelected(index)}">
@@ -32,6 +33,7 @@
             <input type="checkbox" v-model="checked" :value="item.eventLog.id" @click="currClick(item,index)">
             <div class="log-name img-button" :title="item.eventLog.logName">{{item.eventLog.logName}}</div>
           </div>
+          <div class="state">{{item.eventLog.state? '是': '否'}}</div>
           <div class="uploader">{{item.user.name}}</div>
           <div class="date">
             {{`${new Date(item.eventLog.createDate).getFullYear()}-${new Date(item.eventLog.createDate).getMonth() + 1}-${new Date(item.eventLog.createDate).getDate()}`}}
@@ -44,10 +46,10 @@
             {{item.normalLog ? item.normalLog.logName : '无'}}
           </div>
           <div class="merge-relation">
-            <div v-if="item.eventLog.mergeRelation" class="relation1" @click="selectedRel(index,0)"
+            <div v-if="item.eventLog.mergeRelationLogs" class="relation1" @click="selectedRel(index,0)"
                  :title="item.eventLog.mergeRelationLogs[0].logName">{{item.eventLog.mergeRelationLogs[0].logName}}
             </div>
-            <div v-if="item.eventLog.mergeRelation" class="relation2" @click="selectedRel(index,1)"
+            <div v-if="item.eventLog.mergeRelationLogs" class="relation2" @click="selectedRel(index,1)"
                  :title="item.eventLog.mergeRelationLogs[1].logName">{{item.eventLog.mergeRelationLogs[1].logName}}
             </div>
             <div v-show="!item.eventLog.mergeRelation">没有融合来源</div>
@@ -120,15 +122,15 @@
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
       .log-head {
-        flex: 0 0 25%;
+        flex: 0 0 20%;
         text-align: left;
         display: flex;
         flex-direction: row;
-        min-width: 220px;
+        min-width: 200px;
         .log-name {
           cursor: pointer;
-          min-width: 190px;
-          flex: 0 0 20%;
+          min-width: 180px;
+          flex: 0 0 18%;
           .too-long-text;
           text-align: left;
         }
@@ -143,6 +145,10 @@
           top: 2px;
         }
       }
+      .state{
+        flex: 0 0 6%;
+        min-width: 60px;
+      }
       .uploader {
         flex: 0 0 8%;
         min-width: 80px;
@@ -153,18 +159,18 @@
         .too-long-text;
       }
       .raw-log {
-        flex: 0 0 17%;
-        min-width: 170px;
+        flex: 0 0 15%;
+        min-width: 150px;
         .too-long-text;
       }
       .normal-log {
-        flex: 0 0 17%;
-        min-width: 170px;
+        flex: 0 0 15%;
+        min-width: 150px;
         .too-long-text;
       }
       .merge-relation {
-        flex: 0 0 17%;
-        min-width: 170px;
+        flex: 0 0 15%;
+        min-width: 150px;
       }
     }
   }

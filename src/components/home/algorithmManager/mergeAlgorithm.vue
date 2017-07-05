@@ -4,6 +4,7 @@
       <el-button type="primary" icon="plus" @click="addMethod">添加</el-button>
       <el-button @click="shareSome" icon="share">启用</el-button>
       <el-button @click="deleteSome" icon="delete">删除</el-button>
+      <el-button @click="unshareSome" icon="minus">禁用</el-button>
     </div>
     <div class='title'>所有算法已加载，共{{count}}个</div>
     <div id="algorithm-list">
@@ -200,6 +201,19 @@
           this.$hint(err.data.msg, 'error')
         })
 
+      },
+      unshareSome(){
+        this.$api({method: 'freezeMerge', body: {idList: this.checked}}).then(res => {
+          if (res.data.code === 1) {
+            this.$hint('禁用成功', 'success')
+            this.getTotalItems()
+          } else {
+            this.$hint('不明原因失败，建议刷新', 'error')
+          }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
+        })
       },
       changeState(index){
         if (parseInt(this.items[index].state) === 0) {

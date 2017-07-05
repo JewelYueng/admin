@@ -19,10 +19,12 @@
           <input type="checkbox" v-model="checkAll" id="文件名" value="文件名">
           <div class="log-name">文件名</div>
         </div>
+        <div class="state">分享状态</div>
         <div class="uploader">上传者</div>
         <div class="date">日期</div>
         <div class="raw-log">原始日志</div>
         <div class="event-log">事件日志</div>
+        <div class="operations">操作</div>
       </div>
       <div class="list">
         <div class="list-item" v-for="(item,index) in items" :class="{selectedItem: isSelected(index)}">
@@ -30,6 +32,7 @@
             <input type="checkbox" v-model="checked" :value="item.normalLog.id" @click="currClick(item,index)">
             <div class="log-name" :title="item.normalLog.logName">{{item.normalLog.logName}}</div>
           </div>
+          <div class="state">{{item.normalLog.state? '是': '否'}}</div>
           <div class="uploader">{{item.user.name}}</div>
           <div class="date">
             {{`${new Date(item.normalLog.createDate).getFullYear()}-${new Date(item.normalLog.createDate).getMonth() + 1}-${new Date(item.normalLog.createDate).getDate()}`}}
@@ -139,19 +142,23 @@
         flex: 0 0 8%;
         min-width: 80px;
       }
+      .state{
+        flex: 0 0 10%;
+        min-width: 100px;
+      }
       .date {
         flex: 0 0 10%;
         min-width: 90px;
         .too-long-text;
       }
       .raw-log {
-        flex: 0 0 25%;
-        min-width: 250px;
+        flex: 0 0 20%;
+        min-width: 200px;
         .too-long-text;
       }
       .event-log {
-        flex: 0 0 25%;
-        min-width: 250px;
+        flex: 0 0 20%;
+        min-width: 200px;
         .too-long-text;
       }
     }
