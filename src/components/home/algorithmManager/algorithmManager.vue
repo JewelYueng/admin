@@ -1,7 +1,7 @@
 <template>
   <div class="algorithm">
     <div class="head">
-      <el-button type="primary" icon="plus" @click="">添加</el-button>
+      <el-button type="primary" icon="plus" @click="addMethods">添加</el-button>
       <el-button @click="shareSome" icon="share">启用</el-button>
       <el-button @click="deleteSome" icon="delete">删除</el-button>
     </div>
@@ -250,6 +250,12 @@
           this.$hint(err.data.msg,'error')
         })
 
+      },
+      addMethods(){
+        this.$modal({type: 'upload', data: {type: 'mining'}}).then((res)=>{
+          console.log(res)
+          this.getTotalItems()
+        })
       },
       currClick: function (item, index) {
         let _this = this;

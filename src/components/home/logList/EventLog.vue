@@ -1,64 +1,71 @@
 <template>
-  <div class="event-log-details">
-    <div class="head">
-      <el-button type="primary" @click="upload" icon="upload">上传</el-button>
-      <el-button @click="shareSome" icon="share">分享</el-button>
-      <el-button @click="deleteSome" icon="delete">删除</el-button>
+  <div class="event-log">
+    <div class="share-head">
+      <div class="bash-btns">
+        <el-button @click="deleteSome" icon="delete">删除</el-button>
+      </div>
       <div class="search">
         <input type="text" placeholder="请输入关键字" v-model="keyWord">
-        <div v-show="isSearching" class="close-btn" @click="close_search">
+        <div v-show="isSearching" class="img-button close-btn" @click="close_search">
           <i class="el-icon-circle-cross"></i>
         </div>
         <div v-show="!isSearching" class="search-button" @click="searchLog"><i class="el-icon-search"></i></div>
       </div>
     </div>
-    <div class='title'>所有文件已加载，共{{count}}个</div>
+    <div class='title'>所有文件已加载，共{{items.length}}个</div>
     <div id="log-list">
-      <div class="list" style="border-bottom: 0.8px solid #324157">
+      <div class="list-head" style="border-bottom: 0.8px solid #324157">
         <div class="log-head">
           <input type="checkbox" v-model="checkAll" id="文件名" value="文件名">
-          <span class="log-name">文件名</span>
+          <div class="log-name">文件名</div>
         </div>
+        <div class="uploader">上传者</div>
         <div class="date">日期</div>
         <div class="raw-log">原始日志</div>
         <div class="normal-log">规范化日志</div>
         <div class="merge-relation">融合来源</div>
         <div class="operations"></div>
       </div>
-      <div class="list" v-for="(item,index) in items" :class="{selectedItem: isSelected(index)}">
-        <div class="input-box log-head">
-          <input type="checkbox" v-model="checked" :value="item.eventLog.id" @click="currClick(item,index)">
-          <span @click="showDetail(index)" class="log-name"
-                :title="item.eventLog.logName">{{item.eventLog.logName}}</span>
-        </div>
-        <div class="date">
-          {{`${new Date(item.eventLog.createDate).getFullYear()}-${new Date(item.eventLog.createDate).getMonth() + 1}-${new Date(item.eventLog.createDate).getDate()}`}}
-        </div>
-        <div @click="jumpToRaw(index)" class="relation-logs raw-log" :title="item.rawLog ? item.rawLog.logName : '无'">
-          {{item.rawLog ? item.rawLog.logName : '无'}}
-        </div>
-        <div @click="jumpToNormal(index)" class="relation-logs normal-log"
-             :title="item.normalLog ? item.normalLog.logName : '无'">
-          {{item.normalLog ? item.normalLog.logName : '无'}}
-        </div>
-        <div class="merge-relation">
-          <div v-if="item.eventLog.mergeRelation" class="relation1" @click="selectedRel(index,0)"
-               :title="item.eventLog.mergeRelation.split(',')[0]">{{item.eventLog.mergeRelation.split(',')[0]}}
+      <div class="list">
+        <div class="list-item" v-for="(item,index) in items" :class="{selectedItem: isSelected(index)}">
+          <div class="log-head">
+            <input type="checkbox" v-model="checked" :value="item.eventLog.id" @click="currClick(item,index)">
+            <div class="log-name img-button" :title="item.eventLog.logName">{{item.eventLog.logName}}</div>
           </div>
-          <div v-if="item.eventLog.mergeRelation" class="relation2" @click="selectedRel(index,1)"
-               :title="item.eventLog.mergeRelation.split(',')[1]">{{item.eventLog.mergeRelation.split(',')[1]}}
+          <div class="uploader">{{item.user.name}}</div>
+          <div class="date">
+            {{`${new Date(item.eventLog.createDate).getFullYear()}-${new Date(item.eventLog.createDate).getMonth() + 1}-${new Date(item.eventLog.createDate).getDate()}`}}
           </div>
-          <div v-show="!item.eventLog.mergeRelation">没有融合来源</div>
-        </div>
-        <div class="operations">
-          <i class="el-icon-setting" title="开始流程挖掘" v-on:click="processMining(index)"></i>
-          <img class="download-btn" title="下载" src="static/img/cloud_download.png"
-               @click="download(index)">
-          <i class="el-icon-share" v-show="item.eventLog.isShared==0" title="分享" @click="share(index)"></i>
-          <i class="el-icon-minus" v-show="item.eventLog.isShared!=0" title="取消分享" @click="share(index)"></i>
-          <i class="el-icon-delete" title="删除" @click="deleteLog(index)"></i>
+          <div @click="jumpToRaw(index)" class="raw-log relation-logs" :title="item.rawLog ? item.rawLog.logName : '无'">
+            {{item.rawLog ? item.rawLog.logName : '无'}}
+          </div>
+          <div @click="jumpToNormal(index)" class="normal-log relation-logs"
+               :title="item.normalLog ? item.normalLog.logName : '无'">
+            {{item.normalLog ? item.normalLog.logName : '无'}}
+          </div>
+          <div class="merge-relation">
+            <div v-if="item.eventLog.mergeRelation" class="relation1" @click="selectedRel(index,0)"
+                 :title="item.eventLog.mergeRelationLogs[0].logName">{{item.eventLog.mergeRelationLogs[0].logName}}
+            </div>
+            <div v-if="item.eventLog.mergeRelation" class="relation2" @click="selectedRel(index,1)"
+                 :title="item.eventLog.mergeRelationLogs[1].logName">{{item.eventLog.mergeRelationLogs[1].logName}}
+            </div>
+            <div v-show="!item.eventLog.mergeRelation">没有融合来源</div>
+          </div>
+          <div class="operations">
+            <i class="el-icon-delete" title="删除" @click="deleteLog(index)"></i>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="block pageDiv">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="10"
+        layout=" prev, pager, next, jumper"
+        :total="total_items_num">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -67,11 +74,11 @@
   @import '~assets/colors.less';
   @import "~assets/layout.less";
 
-  .head {
+  .share-head {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    position: relative;
+    align-items: flex-end;
+    justify-content: space-between;
     padding-bottom: 30px;
   }
 
@@ -82,7 +89,7 @@
     color: #b5b5b5;
   }
 
-  .list:hover {
+  .list-item:hover {
     background-color: @logList_Choose;
   }
 
@@ -98,9 +105,14 @@
     margin-right: 10px;
     font-size: 14px;
     .list {
+      height: 530px;
+      overflow: auto;
+    }
+    .list-item, .list-head {
       img {
         width: 12px;
         height: 12px;
+        margin-right: 10px;
       }
       display: flex;
       flex-direction: row;
@@ -108,91 +120,80 @@
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
       .log-head {
-        flex: 0 0 200px;
+        flex: 0 0 25%;
+        text-align: left;
         display: flex;
         flex-direction: row;
-        text-align: left;
+        min-width: 220px;
         .log-name {
           cursor: pointer;
-          width: 180px;
+          min-width: 190px;
+          flex: 0 0 20%;
           .too-long-text;
+          text-align: left;
         }
       }
       .operations {
-        flex: 0 0 150px;
-        color: @dark_theme;
-        i {
-          margin: 0 5px;
-          cursor: pointer;
+        flex: 0 0 10%;
+        min-width: 40px;
+        img {
+          width: 18px;
+          height: 18px;
+          position: relative;
+          top: 2px;
         }
       }
+      .uploader {
+        flex: 0 0 8%;
+        min-width: 80px;
+      }
       .date {
-        flex: 0 0 120px;
+        flex: 0 0 10%;
+        min-width: 90px;
+        .too-long-text;
       }
       .raw-log {
-        flex: 0 0 150px;
+        flex: 0 0 17%;
+        min-width: 170px;
         .too-long-text;
       }
       .normal-log {
-        flex: 0 0 150px;
-        .too-long-text;
-      }
-      .event-log {
-        flex: 0 0 150px;
+        flex: 0 0 17%;
+        min-width: 170px;
         .too-long-text;
       }
       .merge-relation {
-        flex: 0 0 200px;
-        .too-long-text;
-        .relation1 {
-          width: 130px;
-          .too-long-text;
-          cursor: pointer;
-        }
-        .relation2 {
-          width: 130px;
-          .too-long-text;
-          cursor: pointer;
-        }
+        flex: 0 0 17%;
+        min-width: 170px;
       }
-    }
-    .selectedItem {
-      background-color: #cbd7ea;
     }
   }
 
-  .log-name {
-    cursor: pointer;
-  }
 </style>
 
 <script>
-  import ElButton from "../../../../node_modules/element-ui/packages/button/src/button"
   import {mapActions} from 'vuex'
   export default{
-    components: {ElButton},
     data(){
       return {
         checked: [],
         totalAmount: [],
         isSearching: false,
+        keyWord: '',
         items: [],
-        keyWord: ''
+        currentPage: 1,
+        total_items_num: 10
       }
     },
     created(){
+      if (this.$store.getters.selectedLog.type === 2) {
+        this.currentPage = parseInt(this.$store.getters.selectedLog.page)
+      }
       this.getTotalItems()
     },
-    destroyed(){
-      this.selectLog({type: -1, id: null})
-    },
     computed: {
-      count: function (item, index) {
-        let sum = this.items.length;
-        return sum;
-      },
       amount: function (item, index) {
-        return this.checked.length;
+        return this.items.length;
       },
       checkAll: {
         get: function () {
@@ -204,9 +205,9 @@
             this.totalAmount = [];
             this.checked = this.items.map(function (item) {
               item.checked = true;
-              let total = item.eventLog.id;
+              let total = item.rawLog.id;
               _this.totalAmount.push(total);
-              return item.eventLog.id;
+              return item.rawLog.id;
             })
           } else {
             this.checked = [];
@@ -223,28 +224,49 @@
         }
       }
     },
+
     methods: {
-      ...mapActions(['selectLog', 'changeFilePath', 'changeHomePath']),
+      ...mapActions(['selectLog', 'changeFilePath']),
+      handleCurrentChange(val) {
+        this.currentPage = val
+        if (this.isSearching) {
+          this.searchLog()
+        } else {
+          this.getTotalItems()
+        }
+      },
       isSelected(index){
         return this.$store.getters.selectedLog.type === 2 && this.items[index].eventLog.id === this.$store.getters.selectedLog.id
-
       },
       jumpToNormal(index){
         if (this.items[index].normalLog) {
-          this.selectLog({type: 1, id: this.items[index].normalLog.id})
-          this.changeFilePath('1-2')
+          this.$api({method: 'getNormalLogPage', query: {id: this.items[index].normalLog.id}}).then(res => {
+            this.selectLog({type: 1, id: this.items[index].normalLog.id, page: res.data.page})
+            this.changeFilePath('1-2')
+          }, err => {
+            this.$hint('网络出错', 'error')
+          })
         }
       },
       jumpToRaw(index){
         if (this.items[index].rawLog) {
-          this.selectLog({type: 0, id: this.items[index].rawLog.id})
-          this.changeFilePath('1-1')
+          this.$api({method: 'getRawLogPage', query: {id: this.items[index].rawLog.id}}).then(res => {
+            this.selectLog({type: 0, id: this.items[index].rawLog.id, page: res.data.page})
+            this.changeFilePath('1-1')
+          }, err => {
+            this.$hint('网络出错', 'error')
+          })
         }
       },
       selectedRel(log_index, index){
-        let relations = this.items[log_index].eventLog.mergeRelation
-        if (relations) {
-          this.selectLog({type: 2, id: relations.split(',')[index]})
+        let relation_id = this.items[log_index].eventLog.mergeRelationLogs[index].id
+        if (relation_id) {
+          this.$api({method: 'getEventLogPage', query: {id: relation_id}}).then(res => {
+            this.selectLog({type: 2, id: relation_id, page: res.data.page})
+            this.currentPage = res.data.page
+          }, err => {
+            this.$hint('网络出错', 'error')
+          })
         }
       },
       searchLog(){
@@ -254,6 +276,7 @@
         this.$api({method: 'searchEventLog', query: {keyWord: this.keyWord}}).then(res => {
           console.log(res)
           this.items = res.data.logGroups
+          this.total_items_num = res.data.pageNum * 10
           this.isSearching = true
         })
       },
@@ -262,54 +285,11 @@
         this.getTotalItems()
         this.keyWord = ''
       },
-      upload(){
-        this.$modal({type: 'upload', data: {type: 'event'}}).then((res) => {
-          console.log(res)
-          this.getTotalItems()
-        })
-      },
-      download(index){
-        this.$api({method: 'downLoadEventLog', query: {id: this.items[index].eventLog.id}}).then((res) => {
-          console.log(res.data)
-          this.createAndDownloadFile(this.items[index].eventLog.logName, res.data)
-        })
-      },
-      shareSome(){
-        this.$api({method: 'shareEventLog', body: {idList: this.checked}}).then(res => {
-          if (res.data.code === 1) {
-            this.$hint('分享成功', 'success')
-            this.getTotalItems()
-          } else {
-            this.$hint('分享失败', 'warn')
-          }
+      deleteLog: function (index) {
 
-        })
-      },
-      share(index){
-        if (this.items[index].eventLog.isShared === 0) {
-          this.$api({method: 'shareEventLog', body: {idList: [this.items[index].eventLog.id]}}).then(res => {
-            if (res.data.code === 1) {
-              this.$hint('分享成功', 'success')
-              this.getTotalItems()
-            } else {
-              this.$hint('分享失败', 'error')
-            }
-          })
-        } else {
-          this.$api({method: 'unShareEventLog', body: {idList: [this.items[index].eventLog.id]}}).then(res => {
-            if (res.data.code === 1) {
-              this.$hint('取消分享成功', 'success')
-              this.getTotalItems()
-            } else {
-              this.$hint('取消分享失败', 'error')
-            }
-          })
-        }
-      },
-      deleteLog(index){
-        this.$api({method: 'deleteEventLog', opts: {body: {idList: [this.items[index].eventLog.id]}}}).then(res => {
-          if (res.data.code === 1) {
-            this.$hint('删除成功', 'success')
+        this.$api({method: 'deleteEventLog', opts: {body: {idList: [this.items[index].rawLog.id]}}}).then((res) => {
+          if (parseInt(res.data.code) === 1) {
+            this.$hint('删除成功', 'success');
             this.getTotalItems()
             this.checked = [];
             this.totalAmount = [];
@@ -317,8 +297,11 @@
               item.checked = false;
             });
           } else {
-            this.$hint('删除失败', 'error')
+            this.$hint('不明原因失败，建议刷新', 'error')
           }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
         })
       },
       deleteSome: function () {
@@ -336,33 +319,26 @@
               item.checked = false;
             });
           } else {
-            this.$hint('删除失败', 'error')
+            this.$hint('不明原因失败，建议刷新', 'error')
           }
+        }, err => {
+          console.log(err)
+          this.$hint(err.data.msg, 'error')
         })
 
-      },
-      processMining(index){
-        this.$router.push({name: 'mining', params: {log_id: this.items[index].eventLog.id}})
-      },
-      getTotalItems(){
-        const _this = this
-        this.$api({method: 'getEventLog'}).then((res) => {
-          console.log(res)
-          _this.items = res.data.logGroups
-        })
-      },
-      createAndDownloadFile(fileName, content) {
-        let aTag = document.createElement('a');
-        let blob = new Blob([content]);
-        aTag.download = fileName;
-        aTag.href = URL.createObjectURL(blob);
-        aTag.click();
-        URL.revokeObjectURL(blob);
       },
       showDetail: function (index) {
         this.$modal({
           type: 'log-detail',
           data: this.items[index].eventLog
+        })
+      },
+      getTotalItems(){
+        const _this = this
+        this.$api({method: 'getEventLog', query: {page: this.currentPage}}).then((res) => {
+          console.log(res)
+          _this.items = res.data.logGroups
+          _this.total_items_num = res.data.pageNum * 10
         })
       },
       currClick: function (item, index) {
@@ -392,12 +368,11 @@
             });
           }
         }
-      }
-    }
-    ,
+      },
+    },
     watch: {
       checked: function () {
-        this.amount = this.checked.length;
+        this.amount = this.items.length;
       }
     }
   }

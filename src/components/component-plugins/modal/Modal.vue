@@ -75,10 +75,12 @@
 <script>
   import { register } from './modal'
   import Loading from './boxes/Loading.vue'
+  import Upload from './boxes/Upload.vue'
 
   export default {
     components: {
-      Loading
+      Loading,
+      Upload
     },
     data(){
       return {

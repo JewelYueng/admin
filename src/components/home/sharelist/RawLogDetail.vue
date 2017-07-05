@@ -1,32 +1,55 @@
 <template>
   <div class="raw-log">
-    <div class="head"><input type="text" class="search" placeholder="请输入关键字" v-model="keyWord">
-      <div v-show="isSearching" class="img-button close-btn" @click="close_search">
-        <i class="el-icon-circle-cross"></i>
+    <div class="share-head">
+      <div class="search">
+        <input type="text" placeholder="请输入关键字" v-model="keyWord">
+        <div v-show="isSearching" class="img-button close-btn" @click="close_search">
+          <i class="el-icon-circle-cross"></i>
+        </div>
+        <div v-show="!isSearching" class="search-button" @click="searchLog"><i class="el-icon-search"></i></div>
       </div>
-      <div v-show="!isSearching" id="search_button" @click="searchLog"><i class="el-icon-search"></i></div>
     </div>
-    <div class='title'>所有文件已加载，共{{count}}个</div>
+    <div class='title'>所有文件已加载，共{{items.length}}个</div>
     <div id="log-list">
-      <div class="list" style="border-bottom: 0.8px solid #324157">
-        <div class="log-name">文件名</div>
+      <div class="list-head" style="border-bottom: 0.8px solid #324157">
+        <div class="log-head">
+          <input type="checkbox" v-model="checkAll" id="文件名" value="文件名">
+          <div class="log-name">文件名</div>
+        </div>
         <div class="uploader">上传者</div>
         <div class="date">日期</div>
         <div class="normal-log">规范化日志</div>
         <div class="event-log">事件日志</div>
       </div>
-      <div class="list" v-for="(item,index) in items">
-        <div class="log-name" :title="item.rawLog.logName">{{item.rawLog.logName}}</div>
-        <div class="uploader">{{item.user.name}}</div>
-        <div class="date">
-          {{`${new Date(item.rawLog.createDate).getFullYear()}-${new Date(item.rawLog.createDate).getMonth() + 1}-${new Date(item.rawLog.createDate).getDate()}`}}
-        </div>
-        <div class="normal-log" :title="item.normalLog ? item.normalLog.logName : '无'">{{item.normalLog ? item.normalLog.logName : '无'}}</div>
-        <div class="event-log" :title="item.eventLog ? item.eventLog.logName : '无'">{{item.eventLog ? item.eventLog.logName : '无'}}</div>
-        <div class="operations">
-          <img class="download_button" title="下载" src="static/img/cloud_download.png" @click="download(index)">
+      <div class="list">
+        <div class="list-item" v-for="(item,index) in items" :class="{selectedItem: isSelected(index)}">
+          <div class="log-name" :title="item.rawLog.logName">{{item.rawLog.logName}}</div>
+          <div class="uploader">{{item.user.name}}</div>
+          <div class="date">
+            {{`${new Date(item.rawLog.createDate).getFullYear()}-${new Date(item.rawLog.createDate).getMonth() + 1}-${new Date(item.rawLog.createDate).getDate()}`}}
+          </div>
+          <div @click="jumpToNormal(index)" class="normal-log relation-logs"
+               :title="item.normalLog ? item.normalLog.logName : '无'">
+            {{item.normalLog ? item.normalLog.logName : '无'}}
+          </div>
+          <div @click="jumpToEvent(index)" class="event-log relation-logs"
+               :title="item.eventLog ? item.eventLog.logName : '无'">
+            {{item.eventLog ? item.eventLog.logName : '无'}}
+          </div>
+          <div class="operations">
+            <img class="download_button" title="下载" src="static/img/cloud_download.svg" @click="download(index)">
+          </div>
         </div>
       </div>
+    </div>
+    <div class="block pageDiv">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="10"
+        layout=" prev, pager, next, jumper"
+        :total="total_items_num">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -35,11 +58,11 @@
   @import '~assets/colors.less';
   @import "~assets/layout.less";
 
-  .head {
+  .share-head {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    position: relative;
+    align-items: flex-end;
+    justify-content: flex-end;
     padding-bottom: 30px;
   }
 
@@ -50,41 +73,11 @@
     color: #b5b5b5;
   }
 
-  .close-btn {
-    position: relative;
-    right: 28px;
-    top: -5px;
-    i {
-      color: #5c8aac;
-    }
-  }
-
   .download_button {
     cursor: pointer;
   }
 
-  .search {
-    margin-left: 654px;
-    background-color: @tab_selected;
-    color: @dark_theme;
-    text-align: center;
-    width: @search_width;
-    height: @search_height;
-    border-radius: @search_border-radius;
-    border: none;
-    outline-style: none;
-  }
-
-  #search_button {
-    width: 20px;
-    height: 20px;
-    position: relative;
-    left: -50px;
-    top: 5px;
-    cursor: pointer;
-  }
-
-  .list:hover {
+  .list-item:hover {
     background-color: @logList_Choose;
   }
 
@@ -100,6 +93,10 @@
     margin-right: 10px;
     font-size: 14px;
     .list {
+      height: 530px;
+      overflow: auto;
+    }
+    .list-item, .list-head {
       img {
         width: 12px;
         height: 12px;
@@ -112,27 +109,38 @@
       border-bottom: 0.5px solid @light_theme;
       .log-name {
         cursor: pointer;
-        max-width: 200px;
-        flex: 0 0 250px;
+        min-width: 250px;
+        flex: 0 0 25%;
         .too-long-text;
         text-align: left;
       }
       .operations {
-        flex: 0 0 40px;
+        flex: 0 0 5%;
+        min-width: 40px;
+        img {
+          width: 18px;
+          height: 18px;
+          position: relative;
+          top: 2px;
+        }
       }
       .uploader {
-        flex: 0 0 90px
+        flex: 0 0 8%;
+        min-width: 80px;
       }
       .date {
-        flex: 0 0 120px;
+        flex: 0 0 10%;
+        min-width: 90px;
         .too-long-text;
       }
       .normal-log {
-        flex: 0 0 250px;
+        flex: 0 0 25%;
+        min-width: 250px;
         .too-long-text;
       }
       .event-log {
-        flex: 0 0 250px;
+        flex: 0 0 25%;
+        min-width: 250px;
         .too-long-text;
       }
     }
@@ -141,6 +149,7 @@
 </style>
 
 <script>
+  import {mapActions} from 'vuex'
   export default{
     data(){
       return {
@@ -148,17 +157,16 @@
         totalAmount: [],
         isSearching: false,
         items: [],
-        keyWord: ''
-
+        keyWord: '',
+        currentPage: 1,
+        total_items_num: 10
       }
     },
     created(){
-      this.$api({method: 'getShareRawLog'}).then((res) => {
-        console.log(res);
-        res.data.logGroups.map((log) => {
-          this.items.push(log);
-        })
-      })
+      if (this.$store.getters.selectedLog.type === 3) {
+        this.currentPage = parseInt(this.$store.getters.selectedLog.page)
+      }
+      this.getTotalItems()
     },
     computed: {
       amount: function (item, index) {
@@ -168,10 +176,52 @@
 
     },
     methods: {
+      ...mapActions(['selectLog', 'changeFilePath']),
+      handleCurrentChange(val) {
+        this.currentPage = val
+        if (this.isSearching) {
+          this.searchLog()
+        } else {
+          this.getTotalItems()
+        }
+
+      },
+      isSelected(index){
+        return this.$store.getters.selectedLog.type === 3 && this.items[index].rawLog.id === this.$store.getters.selectedLog.id
+      },
+      jumpToNormal(index){
+        if (this.items[index].normalLog) {
+          this.$api({method: 'getShareNormalPage', query: {id: this.items[index].normalLog.id}}).then(res => {
+            this.selectLog({type: 4, id: this.items[index].normalLog.id, page: res.data.page})
+            this.changeFilePath('2-2')
+          }, err => {
+            this.$hint('网络出错', 'error')
+          })
+
+        }
+      },
+      jumpToEvent(index){
+        if (this.items[index].eventLog) {
+          this.$api({method: 'getShareEventPage', query: {id: this.items[index].eventLog.id}}).then(res => {
+            this.selectLog({type: 5, id: this.items[index].eventLog.id, page: res.data.page})
+            this.changeFilePath('2-3')
+          }, err => {
+            this.$hint('网络出错', 'error')
+          })
+        }
+      },
       download(index){
         this.$api({method: 'downLoadRawLog', query: {id: this.items[index].rawLog.id}}).then((res) => {
           console.log(res.data)
           this.createAndDownloadFile(this.items[index].rawLog.logName, res.data)
+        })
+      },
+      getTotalItems(){
+        const _this = this
+        this.$api({method: 'getShareRawLog', query: {page: this.currentPage}}).then((res) => {
+          console.log(res.data.pageNum)
+          _this.items = res.data.logGroups
+          _this.total_items_num = parseInt(res.data.pageNum) * 10
         })
       },
       createAndDownloadFile(fileName, content) {
@@ -182,13 +232,13 @@
         aTag.click();
         URL.revokeObjectURL(blob);
       },
-      search: function () {
+      searchLog: function () {
         this.totalAmount = []
         this.checkedAll = false
         this.checked = []
-        this.$api({method: 'searchShareRawLog', query: {keyWord: this.keyWord}}).then(res => {
-          console.log(res)
+        this.$api({method: 'searchShareRawLog', query: {keyWord: this.keyWord, page: this.currentPage}}).then(res => {
           this.items = res.data.logGroups
+          this.total_items_num = res.data.pageNum * 10
           this.isSearching = true
         })
       },
@@ -199,16 +249,6 @@
         this.keyWord = ''
       },
 
-      getTotalItems(){
-        let totalItems = []
-        this.$api({method: 'getShareRawLog'}).then((res) => {
-          console.log(res)
-          res.data.logGroups.map((log) => {
-            totalItems.push(log)
-          })
-        })
-        return totalItems
-      }
 
     },
     watch: {
