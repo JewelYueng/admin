@@ -29,8 +29,8 @@ export default {
   'getEventLogPage': [GET, '/admin/eventLog/page'],
 
 //  用户系统的接口
-  "login": [POST, '/home/login'],
-  "register": [POST,'/user/register'],
+  "getAdmin": [POST, '/admin/getAdmin'],
+  "logout": [POST,'/admin/logout'],
   "forbidUser": [POST,'/admin/user/forbid'],
   "activeUser": [POST,'/admin/user/active'],
   "deleteUser": [DELETE,'/admin/user/delete'],

@@ -19,10 +19,12 @@
           <input type="checkbox" v-model="checkAll" id="文件名" value="文件名">
           <div class="log-name">文件名</div>
         </div>
+        <div class="state">分享状态</div>
         <div class="uploader">上传者</div>
         <div class="date">日期</div>
         <div class="normal-log">规范化日志</div>
         <div class="event-log">事件日志</div>
+        <div class="operations">操作</div>
       </div>
       <div class="list">
         <div class="list-item" v-for="(item,index) in items" :class="{selectedItem: isSelected(index)}">
@@ -30,6 +32,7 @@
             <input type="checkbox" v-model="checked" :value="item.rawLog.id" @click="currClick(item,index)">
             <div class="log-name" :title="item.rawLog.logName">{{item.rawLog.logName}}</div>
           </div>
+          <div class="state">{{item.rawLog.isShared? '是': '否'}}</div>
           <div class="uploader">{{item.user.name}}</div>
           <div class="date">
             {{`${new Date(item.rawLog.createDate).getFullYear()}-${new Date(item.rawLog.createDate).getMonth() + 1}-${new Date(item.rawLog.createDate).getDate()}`}}
@@ -113,12 +116,15 @@
       width: 100%;
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
+      align-items: center;
       .log-head{
         flex: 0 0 25%;
         text-align: left;
         display: flex;
         flex-direction: row;
         min-width: 220px;
+        justify-content: flex-start;
+        align-items: center;
         .log-name {
           cursor: pointer;
           min-width: 200px;
@@ -141,19 +147,23 @@
         flex: 0 0 8%;
         min-width: 80px;
       }
+      .state{
+        flex: 0 0 10%;
+        min-width: 100px;
+      }
       .date {
         flex: 0 0 10%;
         min-width: 90px;
         .too-long-text;
       }
       .normal-log {
-        flex: 0 0 25%;
-        min-width: 250px;
+        flex: 0 0 20%;
+        min-width: 200px;
         .too-long-text;
       }
       .event-log {
-        flex: 0 0 25%;
-        min-width: 250px;
+        flex: 0 0 20%;
+        min-width: 200px;
         .too-long-text;
       }
     }

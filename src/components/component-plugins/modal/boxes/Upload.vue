@@ -160,8 +160,18 @@
         this.commit('true')
       },
       handleError(err, file, fileList){
-        console.log(err)
-        this.$hint(err.message.msg,'error')
+        for(let i in err){
+          console.log(i,err[i])
+        }
+        if(err.status === 400){
+          if(this.data.type === 'mining'){
+            this.$hint('上传的算法包不是合法的挖掘算法','error')
+          }
+          if(this.data.type === 'merge'){
+            this.$hint('上传的算法包不是合法的融合算法','error')
+          }
+
+        }
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);
