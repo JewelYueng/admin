@@ -9,12 +9,12 @@
       ref="upload"
       name="files"
       multiple
-      accept=".jar"
-      headers="header"
       :action="action_url"
       :on-preview="handlePreview"
       :on-remove="handleRemove"
       :file-list="fileList"
+      :on-success="handleSuccess"
+      :on-error="handleError"
       :auto-upload="false">
       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
 
@@ -118,9 +118,6 @@
     data(){
       return {
         fileList: [],
-        header: {
-          'Content-Type' : 'multipart/form-data'
-        }
       }
     },
     computed: {
@@ -158,6 +155,13 @@
 //          console.log(err)
 //          this.$hint(err.data.msg, 'error')
 //        })
+      },
+      handleSuccess(){
+        this.commit('true')
+      },
+      handleError(err, file, fileList){
+        console.log(err)
+        this.$hint(err.message.msg,'error')
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);
