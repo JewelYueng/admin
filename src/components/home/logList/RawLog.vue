@@ -32,7 +32,7 @@
             <input type="checkbox" v-model="checked" :value="item.rawLog.id" @click="currClick(item,index)">
             <div class="log-name" :title="item.rawLog.logName">{{item.rawLog.logName}}</div>
           </div>
-          <div class="state">{{item.rawLog.state? '是': '否'}}</div>
+          <div class="state">{{item.rawLog.isShared? '是': '否'}}</div>
           <div class="uploader">{{item.user.name}}</div>
           <div class="date">
             {{`${new Date(item.rawLog.createDate).getFullYear()}-${new Date(item.rawLog.createDate).getMonth() + 1}-${new Date(item.rawLog.createDate).getDate()}`}}
