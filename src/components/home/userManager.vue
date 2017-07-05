@@ -183,6 +183,10 @@
         }
       },
       deleteSome: function () {
+        if(this.checked.length==0){
+          this.$hint('请至少删除一个用户', 'error')
+        }
+        else{
         this.$api({
           method: 'deleteUser',
           opts: {body: {idList: this.checked}}
@@ -202,11 +206,15 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
 
       },
 
       shareSome(){
+        if(this.checked.length==0){
+          this.$hint('请至少恢复一个用户', 'error')
+        }
+        else{
         this.$api({method: 'activeUser', body: {idList: this.checked}}).then(res => {
           if (parseInt(res.data.code) === 200) {
             this.$hint('批量恢复成功', 'success')
@@ -217,7 +225,7 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
 
       },
       changeState(index){

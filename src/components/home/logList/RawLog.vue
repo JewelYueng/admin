@@ -297,6 +297,10 @@
         })
       },
       deleteSome: function () {
+        if(this.checked.length==0){
+          this.$hint('请选择至少一个日志删除', 'error')
+        }
+        else{
         this.$api({
           method: 'deleteRawLog',
           opts: {body: {idList: this.checked}}
@@ -316,7 +320,7 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
 
       },
       currClick: function (item, index) {

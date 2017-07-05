@@ -193,9 +193,9 @@
             this.totalAmount = [];
             this.checked = this.items.map(function (item) {
               item.checked = true;
-              let total = item.rawLog.id;
+              let total = item.normalLog.id;
               _this.totalAmount.push(total);
-              return item.rawLog.id;
+              return item.normalLog.id;
             })
           } else {
             this.checked = [];
@@ -261,7 +261,7 @@
       },
       deleteLog: function (index) {
 
-        this.$api({method: 'deleteNormalLog', opts: {body: {idList: [this.items[index].rawLog.id]}}}).then((res) => {
+        this.$api({method: 'deleteNormalLog', opts: {body: {idList: [this.items[index].normalLog.id]}}}).then((res) => {
           if (parseInt(res.data.code) === 1) {
             this.$hint('删除成功', 'success');
             this.getTotalItems()
@@ -279,6 +279,10 @@
         })
       },
       deleteSome: function () {
+        if(this.checked.length==0){
+          this.$hint('请选择至少一个日志删除', 'error')
+        }
+        else{
         this.$api({
           method: 'deleteNormalLog',
           opts: {body: {idList: this.checked}}
@@ -298,7 +302,7 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
 
       },
       close_search(){
