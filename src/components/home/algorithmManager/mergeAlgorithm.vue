@@ -158,7 +158,7 @@
         }).then((res) => {
           console.log(res.data)
           if (res.data.code === 1) {
-            this.$hint('删除成功', 'success')
+            this.$hint('批量删除成功', 'success')
             this.getTotalItems()
             this.checked = [];
             this.totalAmount = [];
@@ -178,7 +178,7 @@
       shareSome(){
         this.$api({method: 'activeMerge', body: {idList: this.checked}}).then(res => {
           if (res.data.code === 1) {
-            this.$hint('启用成功', 'success')
+            this.$hint('批量启用成功', 'success')
             this.getTotalItems()
           } else {
             this.$hint('不明原因失败，建议刷新', 'warn')

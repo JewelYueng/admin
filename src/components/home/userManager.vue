@@ -189,7 +189,7 @@
         }).then((res) => {
           console.log(res.data)
           if (parseInt(res.data.code) === 200) {
-            this.$hint('删除成功', 'success')
+            this.$hint('批量删除成功', 'success')
             this.getTotalItems()
             this.checked = [];
             this.totalAmount = [];
@@ -209,7 +209,7 @@
       shareSome(){
         this.$api({method: 'activeUser', body: {idList: this.checked}}).then(res => {
           if (parseInt(res.data.code) === 200) {
-            this.$hint('恢复成功', 'success')
+            this.$hint('批量恢复成功', 'success')
             this.getTotalItems()
           } else {
             this.$hint('不明原因失败，建议刷新', 'warn')
