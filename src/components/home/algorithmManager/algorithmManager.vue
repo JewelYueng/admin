@@ -72,12 +72,15 @@
     margin-left: 10px;
     margin-right: 10px;
     font-size: 14px;
+    justify-content: flex-start;
+    align-items: center;
     .list-head, .list-item {
       display: flex;
       flex-direction: row;
       width: 100%;
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
+      align-items: center;
       .methods-name {
         flex: 0 0 300px;
         .too-long-text;

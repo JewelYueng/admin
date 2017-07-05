@@ -52,7 +52,7 @@
     color: #b5b5b5;
   }
 
-  .list:hover {
+  .list-item:hover {
     background-color: @logList_Choose;
   }
 
@@ -73,6 +73,8 @@
       width: 100%;
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
+      justify-content: flex-start;
+      align-items: center;
       .userID {
         flex: 0 0 300px;
       }

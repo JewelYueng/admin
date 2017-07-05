@@ -76,11 +76,13 @@
   import { register } from './modal'
   import Loading from './boxes/Loading.vue'
   import Upload from './boxes/Upload.vue'
+  import LogDetail from './boxes/LogDetail.vue'
 
   export default {
     components: {
       Loading,
-      Upload
+      Upload,
+      LogDetail
     },
     data(){
       return {

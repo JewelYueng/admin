@@ -31,7 +31,7 @@
         <div class="list-item" v-for="(item,index) in items" :class="{selectedItem: isSelected(index)}">
           <div class="log-head">
             <input type="checkbox" v-model="checked" :value="item.eventLog.id" @click="currClick(item,index)">
-            <div class="log-name img-button" :title="item.eventLog.logName">{{item.eventLog.logName}}</div>
+            <div class="log-name img-button" :title="item.eventLog.logName" @click="showDetail(index)">{{item.eventLog.logName}}</div>
           </div>
           <div class="state">{{item.eventLog.isShared? '是': '否'}}</div>
           <div class="uploader">{{item.user.name}}</div>
@@ -121,19 +121,20 @@
       width: 100%;
       padding: 10px 0px 10px 0px;
       border-bottom: 0.5px solid @light_theme;
-      justify-content: center;
+      justify-content: flex-start;
+      align-items: center;
       .log-head {
         flex: 0 0 20%;
         text-align: left;
         display: flex;
         flex-direction: row;
-        min-width: 210px;
-        justify-content: center;
+        min-width: 200px;
+        justify-content: flex-start;
         align-items: center;
         .log-name {
           cursor: pointer;
-          min-width: 180px;
-          flex: 0 0 19%;
+          min-width: 170px;
+          flex: 0 0 18%;
           .too-long-text;
           text-align: left;
         }
