@@ -169,6 +169,10 @@
     methods: {
 
       deleteSome: function () {
+        if(this.checked.length==0){
+          this.$hint('请至少删除一个算法', 'error')
+        }
+        else{
         this.$api({
           method: 'deleteMerge',
           opts: {body: {idList: this.checked}}
@@ -188,11 +192,15 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
 
       },
 
       shareSome(){
+        if(this.checked.length==0){
+          this.$hint('请至少启用一个算法', 'error')
+        }
+        else{
         this.$api({method: 'activeMerge', body: {idList: this.checked}}).then(res => {
           if (res.data.code === 1) {
             this.$hint('批量启用成功', 'success')
@@ -203,7 +211,7 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
 
       },
       unshareSome(){
