@@ -186,7 +186,7 @@
       }
     },
     created(){
-      if (this.$store.getters.selectedLog.type === 3) {
+      if (this.$store.getters.selectedLog.type === 0) {
         this.currentPage = parseInt(this.$store.getters.selectedLog.page)
       }
       this.getTotalItems()

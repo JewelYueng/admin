@@ -1,5 +1,6 @@
 // const base_url = "/AssWeCan"
-const base_url = "http://116.56.129.93:8088/AssWeCan"
+// const base_url = "http://116.56.129.93:8088/AssWeCan"
+const base_url = "http://" + window.location.host + "/AssWeCan"
 
 const
   GET = "get",
@@ -29,7 +30,7 @@ export default {
   'getEventLogPage': [GET, '/admin/eventLog/page'],
 
 //  用户系统的接口
-  "getAdmin": [POST, '/admin/getAdmin'],
+  "getAdmin": [GET, '/admin/getAdmin'],
   "logout": [POST,'/admin/logout'],
   "forbidUser": [POST,'/admin/user/forbid'],
   "activeUser": [POST,'/admin/user/active'],
