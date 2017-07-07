@@ -178,7 +178,7 @@
         return this.view_dict[this.$store.getters.file_path || '1-1']
       },
       current_index(){
-        return this.$store.getters.file_path
+        return this.$store.getters.file_path || '1-1'
       }
     }
   }

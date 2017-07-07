@@ -132,6 +132,7 @@
     },
     created(){
       this.getTotalItems()
+      this.changeHomePath('/users')
     },
     computed: {
 
@@ -172,7 +173,7 @@
 
     },
     methods: {
-
+      ...mapActions(['changeHomePath']),
       currClick: function (item, index) {
         let _this = this;
         if (typeof item.checked === 'undefined') {
