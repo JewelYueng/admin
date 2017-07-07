@@ -231,7 +231,7 @@
       },
 
       shareSome(){
-        if(this.checked.length==0){
+        if(this.checked.length===0){
           this.$hint('请至少恢复一个用户', 'error')
         }
         else{
