@@ -1,7 +1,7 @@
 <template>
   <div class="files-list">
     <div class="left-side">
-      <el-menu :default-active="current_index" class="el-menu-vertical-demo" @select="handleSelect">
+      <el-menu :default-active="active_index" class="el-menu-vertical-demo" @select="handleSelect">
         <el-menu-item index="1"><i class="el-icon-setting"></i>挖掘算法管理</el-menu-item>
         <el-menu-item index="2"><i class="el-icon-setting"></i>融合算法管理</el-menu-item>
       </el-menu>
@@ -68,7 +68,7 @@
       Merge
     },
     created(){
-      this.changeHomePath('/')
+      this.changeHomePath('/methods')
     },
     methods: {
       ...mapActions(['changeHomePath','changeFilePath', 'selectLog']),
@@ -79,11 +79,8 @@
     },
     computed: {
       current_view() {
-        return this.view_dict[this.$store.getters.file_path || '1']
+        return this.view_dict[this.active_index || '1']
       },
-      current_index(){
-        return this.$store.getters.file_path
-      }
     }
   }
 </script>

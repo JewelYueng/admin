@@ -12,7 +12,7 @@
         <div class="userName">用户名</div>
         <div class="email">注册邮箱</div>
         <div class="state">状态</div>
-        <div class="operations"></div>
+        <div class="operations">操作</div>
       </div>
       <div class="list-body">
         <div class="list-item" v-for="(item,index) in items">
@@ -76,14 +76,18 @@
       justify-content: flex-start;
       align-items: center;
       .userID {
-        flex: 0 0 300px;
+        flex: 0 0 30%;
+        min-width: 250px;
+        .too-long-text;
       }
       .userName {
-        width: 300px;
+        flex: 0 0 20%;
+        min-width: 200px;
         .too-long-text;
       }
       .state {
-        flex: 0 0 300px;
+        flex: 0 0 10%;
+        min-width: 80px;
         cursor: pointer;
         .el-icon-circle-check{
           color: #13CE66
@@ -93,10 +97,13 @@
         }
       }
       .email {
-        flex: 0 0 300px;
+        flex: 0 0 25%;
+        min-width: 200px;
+        .too-long-text
       }
       .operations {
-        flex: 0 0 300px;
+        flex: 0 0 10%;
+        min-width: 100px;
         color: @dark_theme;
         i {
           margin: 0 5px;
@@ -125,6 +132,7 @@
     },
     created(){
       this.getTotalItems()
+      this.changeHomePath('/users')
     },
     computed: {
 
@@ -165,7 +173,7 @@
 
     },
     methods: {
-
+      ...mapActions(['changeHomePath']),
       currClick: function (item, index) {
         let _this = this;
         if (typeof item.checked === 'undefined') {
@@ -223,7 +231,7 @@
       },
 
       shareSome(){
-        if(this.checked.length==0){
+        if(this.checked.length===0){
           this.$hint('请至少恢复一个用户', 'error')
         }
         else{

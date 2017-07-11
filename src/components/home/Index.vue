@@ -3,7 +3,7 @@
     <div class="header">
       <div class="nav">
         <div class="logo">
-          <img src="static/img/logo.png" alt="K2" title="K2流程挖掘平台">
+          <img src="/AssWeCan/static/img/logo.png" alt="K2" title="K2流程挖掘平台">
         </div>
         <el-menu theme="dark" :default-active="active_index" class="el-menu-demo" mode="horizontal" router>
           <el-menu-item index="/">日志文件管理</el-menu-item>
@@ -69,7 +69,7 @@
     },
     created(){
       this.$api({method: 'getAdmin'}).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.code === "200") {
           this.admin = res.data.admin
         } else {
           this.$hint(res.data.message, 'error')
@@ -80,7 +80,7 @@
     methods: {
       logout(){
         this.$api({method: 'logout'}).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.code === "200") {
             this.admin = null
             this.$hint('登出成功', 'success')
             window.location.href = '/AssWeCan/admin/loginPage'
