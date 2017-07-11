@@ -128,6 +128,10 @@
         console.log(this.fileName)
       },
       upload(){
+        if(this.fileName=='未选择任何文件'){
+          this.commit(false);
+        }
+        else{
         let file_info = new FormData(this.$refs.upload)
         console.log(file_info)
         const _this = this
@@ -151,7 +155,7 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
       },
       cancel(){
         this.commit(true)
