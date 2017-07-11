@@ -260,7 +260,7 @@
         this.$modal({type: 'upload', data: {type: 'merge'}}).then((res) => {
           console.log(res)
           if(res===false){
-            this.$hint('没有选择任何算法', 'warn')
+            this.$hint('没有选择任何jar包', 'warn')
           }
           this.getTotalItems()
         })
