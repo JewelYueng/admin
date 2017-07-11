@@ -24,7 +24,7 @@
           <div class="description">
             <el-tooltip placement="top">
               <div slot="content">{{item.description}}</div>
-              <div>说明</div>
+              <div>{{item.description}}</div>
             </el-tooltip>
           </div>
           <div class="state">
@@ -97,6 +97,7 @@
       }
       .description {
         flex: 0 0 300px;
+        //overflow:hidden;
       }
       .operations {
         flex: 0 0 300px;

@@ -1,6 +1,6 @@
 <template>
   <div class="fram">
-    <button @click="back" style="position: absolute;right: 0;top: 5px;
+    <button @click="back" style="position: absolute;right: 2px;top: 7px;
        color: #324157;background-color: white;border: none;cursor: pointer"><i class="el-icon-close"></i>
     </button>
     <div class="form-data">
@@ -17,11 +17,19 @@
 
 <style lang="less" rel="stylesheet/less">
   .fram {
-    position: relative;
     padding-left: 30px;
     padding-top: 30px;
     padding-right: 3px;
     width: 400px;
+    height: 600px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 11;
+    /*设定这个div的margin-top的负值为自身的高度的一半,margin-left的值也是自身的宽度的一半的负值.*/
+    /*宽为400,那么margin-top为-200px*/
+    /*高为200那么margin-left为-100px;*/
+    margin: -300px 0 0 -200px;
     background-color: white;
     box-shadow: 0 0 3px 0 #324157;
     border-radius: 5px;
