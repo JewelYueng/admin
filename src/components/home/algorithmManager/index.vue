@@ -35,9 +35,7 @@
     padding: 30px 30px 0 30px;
     overflow: auto;
   }
-  .relation-logs{
-    cursor: pointer;
-  }
+
   input[type='checkbox']{
     width: 20px;
     position: relative;

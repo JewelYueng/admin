@@ -118,9 +118,11 @@
         val.length > 0
           ? this.$nextTick(() => {
           this.show = true
+          document.documentElement.style.overflow='hidden';
         })
           : this.$nextTick(() => {
           this.show = false
+          document.documentElement.style.overflow='auto';
         })
 
       }
