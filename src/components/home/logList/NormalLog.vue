@@ -35,7 +35,7 @@
           <div class="state">{{item.normalLog.isShared? '是': '否'}}</div>
           <div class="uploader">{{item.user.name}}</div>
           <div class="date">
-            {{`${new Date(item.normalLog.createDate).getFullYear()}-${new Date(item.normalLog.createDate).getMonth() + 1}-${new Date(item.normalLog.createDate).getDate()}`}}
+            {{`${new Date(item.normalLog.createDate).getFullYear()}-${new Date(item.normalLog.createDate).getMonth() + 1}-${new Date(item.normalLog.createDate).getDate()} ${new Date(item.normalLog.createDate).getHours()}:${new Date(item.normalLog.createDate).getMinutes()}`}}
           </div>
           <div @click="jumpToRaw(index)" class="raw-log relation-logs" :class="{pointer: item.rawLog}"
                :title="item.rawLog ? item.rawLog.logName : '无'">
