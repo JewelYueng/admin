@@ -280,7 +280,7 @@
             this.currentPage = res.data.page;
             this.close_search();
           }, err => {
-            this.$hint('网络出错', 'error')
+            this.$hint(err.data.msg, 'error')
           })
         }
       },
