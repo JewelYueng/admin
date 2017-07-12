@@ -48,9 +48,14 @@
     min-width: 1020px;
     position: relative;
   }
-  .relation-logs{
-    cursor: pointer;
+
+  .mergeCss{
+    text-decoration: line-through;
   }
+
+ .pointer{
+   cursor: pointer;
+ }
   input[type='checkbox']{
     width: 20px;
     position: relative;

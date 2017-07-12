@@ -21,7 +21,6 @@
     padding-top: 30px;
     padding-right: 3px;
     width: 400px;
-    height: 600px;
     position: fixed;
     left: 50%;
     top: 50%;

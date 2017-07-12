@@ -38,18 +38,21 @@
           <div class="date">
             {{`${new Date(item.eventLog.createDate).getFullYear()}-${new Date(item.eventLog.createDate).getMonth() + 1}-${new Date(item.eventLog.createDate).getDate()}`}}
           </div>
-          <div @click="jumpToRaw(index)" class="raw-log relation-logs" :title="item.rawLog ? item.rawLog.logName : '无'">
+          <div @click="jumpToRaw(index)" class="raw-log relation-logs" :class="{pointer: item.rawLog}"
+               :title="item.rawLog ? item.rawLog.logName : '无'">
             {{item.rawLog ? item.rawLog.logName : '无'}}
           </div>
-          <div @click="jumpToNormal(index)" class="normal-log relation-logs"
+          <div @click="jumpToNormal(index)" class="normal-log relation-logs" :class="{pointer: item.normalLog}"
                :title="item.normalLog ? item.normalLog.logName : '无'">
             {{item.normalLog ? item.normalLog.logName : '无'}}
           </div>
           <div class="merge-relation">
             <div v-if="item.eventLog.mergeRelationLogs" class="relation1 merge-relation" @click="selectedRel(index,0)"
+                 :class="{'pointer': item.eventLog,'mergeCss':item.eventLog.mergeRelationLogs[0].state==2}"
                  :title="item.eventLog.mergeRelationLogs[0].logName">{{item.eventLog.mergeRelationLogs[0].logName}}
             </div>
             <div v-if="item.eventLog.mergeRelationLogs" class="relation2 merge-relation" @click="selectedRel(index,1)"
+                 :class="{'pointer': item.eventLog,'mergeCss':item.eventLog.mergeRelationLogs[1].state==2}"
                  :title="item.eventLog.mergeRelationLogs[1].logName">{{item.eventLog.mergeRelationLogs[1].logName}}
             </div>
             <div v-show="!item.eventLog.mergeRelation">没有融合来源</div>
