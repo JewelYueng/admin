@@ -20,12 +20,7 @@
           <div><input type="checkbox" v-model="checked" :value="item.id" @click="currClick(item,index)">
           </div>
           <div class="methods-name">{{item.name}}</div>
-          <div class="description">
-            <el-tooltip placement="top">
-              <div slot="content">{{item.description}}</div>
-              <div>说明</div>
-            </el-tooltip>
-          </div>
+          <div class="description">{{item.description}}</div>
           <div class="state">
             <i class="el-icon-circle-check" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
             <i class="el-icon-circle-close" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
@@ -97,6 +92,7 @@
       }
       .description {
         flex: 0 0 300px;
+        text-align: left;
       }
       .operations {
         flex: 0 0 300px;

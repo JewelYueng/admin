@@ -52,7 +52,11 @@
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
 
+  }
+  body{
+    margin: 0;
   }
 
   * {
