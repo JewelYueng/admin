@@ -274,7 +274,8 @@
         if (relation_id) {
           this.$api({method: 'getEventLogPage', query: {id: relation_id}}).then(res => {
             this.selectLog({type: 2, id: relation_id, page: res.data.page})
-            this.currentPage = res.data.page
+            this.currentPage = res.data.page;
+            this.close_search();
           }, err => {
             this.$hint('网络出错', 'error')
           })
