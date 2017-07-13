@@ -1,6 +1,6 @@
 // const base_url = "/AssWeCan"
 // const base_url = "http://116.56.129.93:8088/AssWeCan"
-const base_url = "http://" + window.location.host + "/AssWeCan"
+const base_url = 'http://116.56.129.93:8088/AssWeCan/'
 
 const
   GET = "get",

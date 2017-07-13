@@ -24,8 +24,8 @@
           <div class="description">{{item.description}}
           </div>
           <div class="state">
-            <i class="el-icon-circle-check" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
-            <i class="el-icon-circle-close" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
+            <i class="el-icon-circle-check" v-show="item.state!=0" title="禁用" @click="changeState(index)"></i>
+            <i class="el-icon-circle-close" v-show="item.state==0" title="启用" @click="changeState(index)"></i>
           </div>
           <div class="operations">
             <i class="el-icon-delete" title="删除" @click="deleteMethod(index)"></i>
@@ -211,7 +211,10 @@
 
       },
       unshareSome(){
-        this.$api({method: 'freezeMining', body: {idList: this.checked}}).then(res => {
+        if(this.checked.length==0){
+          this.$hint('请至少禁用一个算法', 'error')
+        }
+        else{this.$api({method: 'freezeMining', body: {idList: this.checked}}).then(res => {
           if (res.data.code === 1) {
             this.$hint('禁用成功', 'success')
             this.getTotalItems()
@@ -221,7 +224,7 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
       },
       changeState(index){
         if (parseInt(this.items[index].state) === 0) {
@@ -270,11 +273,11 @@
           if (res.data.code === 1) {
             this.$hint('删除成功', 'success')
             this.getTotalItems();
-//            this.checked = [];
-//            this.totalAmount = [];
-//            this.items.forEach(function (item, index) {
-//              item.checked = false;
-//            });
+            this.checked = [];
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              item.checked = false;
+            });
           } else {
             this.$hint('不明原因失败，建议刷新', 'error')
           }

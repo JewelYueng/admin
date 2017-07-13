@@ -22,8 +22,8 @@
           <div class="userName">{{item.name}}</div>
           <div class="email">{{item.email}}</div>
           <div class="state">
-            <i class="el-icon-circle-check" v-show="item.state==3" title="恢复" @click="changeState(index)" ></i>
-            <i class="el-icon-circle-close" v-show="item.state==1" title="冻结" @click="changeState(index)"></i>
+            <i class="el-icon-circle-check" v-show="item.state==1" title="冻结" @click="changeState(index)" ></i>
+            <i class="el-icon-circle-close" v-show="item.state==3" title="恢复" @click="changeState(index)"></i>
           </div>
           <div class="operations">
             <i class="el-icon-delete" title="删除" @click="deleteUser(index)"></i>
@@ -298,11 +298,11 @@
           if (parseInt(res.data.code) === 200) {
             this.$hint('删除成功', 'success')
             this.getTotalItems();
-//            this.checked = [];
-//            this.totalAmount = [];
-//            this.items.forEach(function (item, index) {
-//              item.checked = false;
-//            });
+            this.checked = [];
+            this.totalAmount = [];
+            this.items.forEach(function (item, index) {
+              item.checked = false;
+            });
           } else {
             this.$hint('不明原因失败，建议刷新', 'error')
           }
