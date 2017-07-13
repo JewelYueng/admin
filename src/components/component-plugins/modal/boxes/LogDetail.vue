@@ -4,14 +4,14 @@
        color: #324157;background-color: white;border: none;cursor: pointer"><i class="el-icon-close"></i>
     </button>
     <div class="form-data">
-      <el-table :data="eventData" height="500" border style="width: 90%">
+      <el-table :data="eventData" border width="360" style="width: 90%">
         <el-table-column class="form-item" prop="name" label="名称" width="180">
         </el-table-column>
         <el-table-column class="form-item" prop="value" label="项值" width="180">
         </el-table-column>
       </el-table>
     </div>
-    <el-button type="primary" @click="back" class="back-btn">返回</el-button>
+    <div class="back-btn"><el-button type="primary" @click="back">返回</el-button></div>
   </div>
 </template>
 
@@ -40,9 +40,6 @@
     position: relative;
     left: 6px;
     overflow: auto;
-    .el-table {
-      width: 100%;
-    }
   }
 
   .form-item {
@@ -51,7 +48,7 @@
   }
 
   .back-btn {
-    margin: 20px;
+    margin: 10px;
   }
 </style>
 

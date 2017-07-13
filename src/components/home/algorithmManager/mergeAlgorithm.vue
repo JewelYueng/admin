@@ -211,6 +211,10 @@
 
       },
       unshareSome(){
+        if(this.checked.length==0){
+          this.$hint('请至少选择一个算法禁用', 'error')
+        }
+        else{
         this.$api({method: 'freezeMerge', body: {idList: this.checked}}).then(res => {
           if (res.data.code === 1) {
             this.$hint('禁用成功', 'success')
@@ -221,7 +225,7 @@
         }, err => {
           console.log(err)
           this.$hint(err.data.msg, 'error')
-        })
+        })}
       },
       changeState(index){
         if (parseInt(this.items[index].state) === 0) {
