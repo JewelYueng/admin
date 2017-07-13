@@ -132,8 +132,8 @@
         }
       }
       .operations {
-        flex: 0 0 5%;
-        min-width: 40px;
+        flex: 0 0 3%;
+        min-width: 25px;
         img {
           width: 18px;
           height: 18px;
@@ -144,14 +144,15 @@
       .uploader {
         flex: 0 0 8%;
         min-width: 80px;
+        .too-long-text;
       }
       .state{
-        flex: 0 0 10%;
+        flex: 0 0 5%;
         min-width: 100px;
       }
       .date {
         flex: 0 0 10%;
-        min-width: 90px;
+        min-width: 120px;
         .too-long-text;
       }
       .raw-log {

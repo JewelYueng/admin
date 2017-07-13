@@ -2,6 +2,7 @@
   <div class="users">
     <div class="head">
       <el-button @click="shareSome" icon="share">恢复</el-button>
+      <el-button @click="freezeSome" icon="share">禁用</el-button>
       <el-button @click="deleteSome" icon="delete">删除</el-button>
     </div>
     <div class='title'>所有用户已加载，共{{count}}个</div>
@@ -248,6 +249,26 @@
         })}
 
       },
+
+      freezeSome(){
+        if(this.checked.length===0){
+          this.$hint('请至少禁用一个用户', 'error')
+        }
+        else{
+          this.$api({method: 'forbidUser', body: {idList: this.checked}}).then(res => {
+            if (parseInt(res.data.code) === 200) {
+              this.$hint('批量禁用成功', 'success')
+              this.getTotalItems()
+            } else {
+              this.$hint('不明原因失败，建议刷新', 'warn')
+            }
+          }, err => {
+            console.log(err)
+            this.$hint(err.data.msg, 'error')
+          })}
+
+      },
+
       changeState(index){
 
         if (parseInt(this.items[index].state) === 3) {
@@ -265,7 +286,7 @@
         } else {
           this.$api({method: 'forbidUser', body: {idList: [this.items[index].id]}}).then(res => {
             if (parseInt(res.data.code) === 200) {
-              this.$hint('冻结成功', 'success')
+              this.$hint('禁用成功', 'success')
               this.getTotalItems()
             } else {
               this.$hint('不明原因失败，建议刷新', 'error')

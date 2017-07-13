@@ -131,20 +131,20 @@
         text-align: left;
         display: flex;
         flex-direction: row;
-        min-width: 200px;
+        min-width: 170px;
         justify-content: flex-start;
         align-items: center;
         .log-name {
           cursor: pointer;
-          min-width: 170px;
+          min-width: 150px;
           flex: 0 0 18%;
           .too-long-text;
           text-align: left;
         }
       }
       .operations {
-        flex: 0 0 6%;
-        min-width: 40px;
+        flex: 0 0 3%;
+        min-width: 25px;
         img {
           width: 18px;
           height: 18px;
@@ -153,16 +153,17 @@
         }
       }
       .state{
-        flex: 0 0 6%;
-        min-width: 60px;
+        flex: 0 0 5%;
+        min-width: 80px;
       }
       .uploader {
         flex: 0 0 8%;
         min-width: 80px;
+        .too-long-text;
       }
       .date {
         flex: 0 0 10%;
-        min-width: 90px;
+        min-width: 120px;
         .too-long-text;
       }
       .raw-log {
