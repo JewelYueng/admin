@@ -247,6 +247,11 @@
         if (this.isSearching) {
           this.searchLog()
         } else {
+          this.checked = [];
+          this.totalAmount = [];
+          this.items.forEach(function (item, index) {
+            item.checked = false;
+          });
           this.getTotalItems()
         }
       },
